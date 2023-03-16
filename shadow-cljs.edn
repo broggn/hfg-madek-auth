@@ -1,0 +1,10 @@
+{:deps {:aliases [:cljs]}
+ :builds 
+ {:madek-auth 
+  {:asset-path "/auth/public/js"
+   :devtools {:http-root "resources/" :http-port 3010}
+   :modules {:main {:init-fn madek.auth.main/init}}
+   :output-dir "resources/auth/public/js"
+   :module-hash-names true
+   :release {:compiler-options {:optimizations :advanced}}
+   :target :browser}}}

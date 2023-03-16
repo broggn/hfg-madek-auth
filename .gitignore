@@ -1,0 +1,9 @@
+.cpcache/
+.nrepl-port
+.shadow-cljs/
+logs/
+node_modules/
+node_modules/.package-lock.json
+resources/auth/public/css/
+resources/auth/public/js/
+tmp/

@@ -1,0 +1,37 @@
+name: MADEK/madek/auth
+windows:
+  2:
+    name: server-run
+    command: |
+      pg_env_set 15
+      export DB_NAME=madek
+      export PGDATABASE=madek
+      # export LOGGING_CONFIG_FILE=log-conf-dev.edn
+      # we need do wait for the front-end to build the assets before we start up
+      sleep 30
+      ./bin/clj-dev server
+  3:
+    name: front-repl-run
+    command: |
+      ./bin/cljs-watch
+  5:
+    name: psql
+    command: |
+      pg_env_set 15
+      psql -d madek
+
+  6:
+    name: datalayer
+    command: |
+      pg_env_set 15
+      cd datalayer
+
+  7:
+    name: test
+    command: |
+      pg_env_set 15
+      ./bin/rspec -h
+  8:
+    name: test-auth-system
+    command: |
+      ./bin/test-auth-system

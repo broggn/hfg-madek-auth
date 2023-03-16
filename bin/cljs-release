@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd .. > /dev/null 2>&1 && pwd -P)"
+cd $PROJECT_DIR
+
+${PROJECT_DIR}/bin/env/java-setup
+${PROJECT_DIR}/bin/env/clojure-setup
+${PROJECT_DIR}/bin/env/nodejs-setup
+
+rm -rf resources/madek/auth/public/js/
+./bin/npm ci
+./bin/npx shadow-cljs release madek-auth
+rm -rf resources/madek/auth/public/js/cljs-runtime/

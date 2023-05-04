@@ -15,25 +15,32 @@ Complete rebase pending!
 
 ## Development
 
-requirements: 
+Requirements: 
 * linux, MacOS 
 * asdf-vm
 
-run the backend service:  
+Run the backend service:  
 
     ./bin/clj-dev server
 
-run frontend watch compilation: 
+Start frontend watch compilation: 
 
     ./bin/cljs-watch
-  
-start test authentication system (yet incomplete): 
+
+Start stylesheet watch compilation: 
+
+    ./bin/css-watch
+
+Start test authentication system: 
 
     ./bin/test-auth-system
 
-run a test: 
+Run a test: 
 
     ./bin/rspec spec/features/sign-in_spec.rb
 
     
 
+### Notes 
+
+* OTP-library https://github.com/suvash/one-time

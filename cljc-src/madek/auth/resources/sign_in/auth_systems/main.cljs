@@ -57,7 +57,14 @@
            [:span " for " [:code email]])]]
    (cond 
      (nil? @data*)  [:div [:h2 "Wait"]]
-     (empty? @data*) [:div [:h2 "Oh No No"]]
+     (empty? @data*) [:div.alert.alert-danger 
+                      [:p [:strong  "Sign-in or sign-up is not available for this e-mail address."]]
+                      [:spann "There are serveral possible causes:"
+                       [:ul
+                        [:li "The e-mail address is wrongly typed."]
+                        [:li "This email is not registered with any account or external sign-up authentication system."]
+                        [:li "There is an registered account but it is deactivated."]]]
+                      [:spann "You can contact your support for help."]]
      :else [:div [auth-systems]])
    [:div.d-flex.mb-3
     [:a.btn.btn-warning {:href (path :sign-in {} (some-> @state/state* :routing 

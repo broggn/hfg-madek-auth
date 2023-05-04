@@ -39,7 +39,7 @@ feature 'Sign in' do
 
   end
 
-  scenario 'Sign-in' do
+  scenario 'Successfull sign-in' do
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
     fill_in 'email', with: @user.email
     click_on 'Continue'
@@ -48,6 +48,13 @@ feature 'Sign in' do
     expect(page).to have_content ":user_session"
   end
 
+  scenario 'Try to sign-in with a deactivated account' do
+    @user.update! is_deactivated: true
+    visit '/auth/sign-in'
+    fill_in 'email', with: @user.email
+    click_on 'Continue'
+    expect(page).to have_content "There is an registered account but it is deactivated."
+  end
 
 end
 

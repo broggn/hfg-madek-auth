@@ -9,6 +9,7 @@
     [madek.auth.state :as state]
     [madek.auth.utils.url :as url]
     [madek.auth.utils.yaml :as yaml]
+    [madek.auth.utils.query-params :as query-params]
     [reagent.core :as reagent]
     [reitit.core :as reitit]
     [taoensso.timbre :refer [debug info warn error spy]]
@@ -23,13 +24,9 @@
       (assoc state :page (-> component :page))
       (assoc state :center-nav (-> component :center-nav))
       (assoc state :page-nav (-> component :page-nav))
-      (assoc state :query (some->> url :query))
-      (assoc state :query-params (some-> url :query 
-                                         (str/split "&")
-                                         (some->> (map #(str/split % "=" 2))
-                                                  (into {})
-                                                  keywordize-keys)))
-;     (assoc state :query-params-parsed (some->> state :query-params (map (fn [[k v]] [k (yaml/parse v)])) (into {})))
+      (assoc state :query (some-> url :query))
+      (assoc state :query-params (some-> url :query query-params/decode))
+      (assoc state :query-params-json-parsed  (some-> url :query (query-params/decode :parse-json? true)))
       (assoc state :route (path (:name state)
                                 (:path-params state)
                                 (:query-params state)))

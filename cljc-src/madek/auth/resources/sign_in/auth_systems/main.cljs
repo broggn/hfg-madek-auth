@@ -20,7 +20,7 @@
   (reset! data* nil)
   (go (some->>
         {} http-client/request :chan <!
-        http-client/filter-success! :body
+        http-client/filter-success :body
         (reset! data*))))
 
 (defn page-debug []

@@ -12,7 +12,7 @@
     [ring.middleware.accept]
     [ring.middleware.content-type :refer [wrap-content-type]]
     [ring.middleware.cookies]
-    [ring.middleware.json]
+    [ring.middleware.json :refer [wrap-json-response wrap-json-body json-response]]
     [ring.middleware.keyword-params :refer [wrap-keyword-params]]
     [ring.middleware.params :refer [wrap-params]]
     [taoensso.timbre :refer [debug error info spy warn]]))
@@ -88,15 +88,19 @@
                   (map (fn [[k v]] [(keyword  k) (yaml/parse-string v)]))
                   (into {}))))))
 
-(defn wrap-exception [handler]
+(defn wrap-exception [handler] 
   (fn [request]
     (try 
       (handler request)
       (catch Exception ex
-        (error ex)
-        {:status 500
-         :headers {"Content-Type" "text/plain"}
-         :body "Unclassified server error, see the server logs for details."}))))
+        (if-let [response (and (some-> ex ex-data :status int?)
+                               (ex-data ex))]
+          (do (info (ex-message ex))
+              (json-response response {}))
+          (do (error ex)
+              {:status 500
+               :headers {"Content-Type" "text/plain"}
+               :body "Unclassified server error, see the server logs for details."}))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -106,8 +110,8 @@
       not-found-handler
       wrap-route-dispatch
       wrap-route-resolve
-      ring.middleware.json/wrap-json-response
-      (ring.middleware.json/wrap-json-body {:keywords? true})
+      wrap-json-response
+      (wrap-json-body {:keywords? true})
       db/wrap-tx
       wrap-keyword-params
       wrap-params

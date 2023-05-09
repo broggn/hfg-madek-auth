@@ -51,13 +51,13 @@
    (defn navigate!
      [url &{:keys [reload]
             :or {reload false}}]
-     (debug 'navigate! [url reload])
-     (if reload
+     (if reload 
        (set! js/window.location url)
        (client-navigation/navigate! url))))
 
 
 (comment
+  (path :sign-in {} {:return-to "/auth/info"})
   (->> [:sign-in {} {:email "foo@bar.com"} ]
        spy
        (apply path)

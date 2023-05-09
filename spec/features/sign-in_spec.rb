@@ -45,10 +45,30 @@ feature 'Sign in' do
     click_on 'Continue'
     click_on ext_auth_name
     click_on "Yes"
-    expect(page).to have_content ":user_session"
+    # redirecting and full reload takes some time; somewhat dirty but more easy
+    # to debug than wait_until
+    sleep(0.5) 
+    uri = Addressable::URI.parse(current_url)
+    # we are on the supplied return-to path:
+    expect(uri.path).to be== '/auth/info'
   end
 
-  scenario 'Try to sign-in with a deactivated account' do
+  scenario 'Unsucessfull sign-in: the auth-service returns false' do
+    visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
+    fill_in 'email', with: @user.email
+    click_on 'Continue'
+    click_on ext_auth_name
+    click_on "No"
+    expect(page).to have_content "Authentication failed"
+    expect(page).to have_content "The user did not authenticate successfully!"
+    expect(page).to have_content "Start over"
+    click_on "Start over"
+    uri = Addressable::URI.parse(current_url)
+    # return-to should be preserved during this process:
+    expect(uri.query).to be== 'return-to=%2Fauth%2Finfo'
+  end
+
+  scenario 'Try to sign in with a deactivated account' do
     @user.update! is_deactivated: true
     visit '/auth/sign-in'
     fill_in 'email', with: @user.email
@@ -57,5 +77,3 @@ feature 'Sign in' do
   end
 
 end
-
-

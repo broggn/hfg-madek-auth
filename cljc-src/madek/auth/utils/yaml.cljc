@@ -11,4 +11,3 @@
     #?(:clj  (-> s yaml/parse-string)
        :cljs (-> s yaml/load js->clj))))
 
-

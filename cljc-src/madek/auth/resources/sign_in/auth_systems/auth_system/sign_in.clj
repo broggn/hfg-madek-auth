@@ -33,7 +33,7 @@
     (throw (ex-info (str/join 
                       ["Provided email address may not differ from the email " 
                        "address returned by the external authentication system"])
-                    {:status 403}))))
+                    {:status 401}))))
 
 (defn validate-request-claims! 
   "Check that the request token is not expired. 
@@ -42,26 +42,50 @@
   (jwt/unsign sign-in-request-token internal-pub-key {:alg :es256}))
 
 
-(defn handler [{{auth_system_id :auth_system_id
-                 int-email :email} :params 
+(defn auth-system [auth_system_id tx]
+  (-> (sql/select :*)
+      (sql/from :auth_systems)
+      (sql/where [:= :auth_systems.id auth_system_id])
+      sql-format
+      (#(jdbc/execute-one! tx %))))
+
+(defn validate-response-claims! [request-claims response-claims]
+  (when-not (= true (:success response-claims))
+    (throw (ex-info "The claims returned from external auth does not indicate successful authentication."
+                    {:status 401
+                     :body {:request-claims request-claims
+                            :response-claims response-claims
+                            :error_message (:error_message response-claims)}}))))
+
+
+(defn handler [{{auth_system_id :auth_system_id} :params 
                 {token :token} :body
                 tx :tx :as request}]
-  (if-let [user-auth-system (-> (query int-email auth_system_id)                
-                                (sql-format :inline false)
-                                (#(jdbc/execute-one! tx %)) spy)]
-    (let [external-pub-key (-> user-auth-system :external_public_key public-key!)
-          internal-pub-key (-> user-auth-system :internal_public_key public-key!)
+  (if-let [auth-system (auth-system auth_system_id tx)]
+    (let [external-pub-key (-> auth-system :external_public_key public-key!)
+          internal-pub-key (-> auth-system :internal_public_key public-key!)
           {ext-email :email 
            sign-in-request-token :sign_in_request_token 
-           :as claims} (jwt/unsign token external-pub-key {:alg :es256})
-          request-claims (validate-request-claims! sign-in-request-token internal-pub-key)]
-      (validate-email-equality! int-email ext-email)
+           :as response-claims} (jwt/unsign token external-pub-key {:alg :es256})
+          request-claims (validate-request-claims! sign-in-request-token internal-pub-key)
+          _ (validate-response-claims! request-claims response-claims)
+          user-auth-system (-> (query (:email response-claims) auth_system_id)                
+                               spy
+                               (sql-format :inline true)
+                               spy
+                               (#(jdbc/execute-one! tx %))
+                               spy
+                               )]
+      (when-not user-auth-system 
+        (throw (ex-info "No suitable authentication-system found!" 
+                        {:status 401})))
       (update-in 
         (create-user-session-response user-auth-system request)
         [:body]
         #(merge % {:request-claims request-claims
-                   :response-claims claims})))
-    {:status 403}))
+                   :response-claims response-claims})))
+    {:status 401
+     :body {:error_message "No authentication system found."}}))
 
 ;;; debug ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (debug-ns *ns*)

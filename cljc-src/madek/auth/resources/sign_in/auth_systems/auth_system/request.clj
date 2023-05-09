@@ -33,7 +33,7 @@
       (merge 
         {:exp (time/>> (time/now) (time/of-seconds 90))
          :iat (time/now)
-         :return_to (presence return-to)
+         :return-to (presence return-to)
          :sign-in-url (str base-url
                            (path :sign-in-user-auth-system-sign-in
                                  (select-keys user-auth-system 

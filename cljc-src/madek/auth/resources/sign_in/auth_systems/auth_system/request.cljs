@@ -40,7 +40,7 @@
         {:method :post
          :json-params (req-data)}
         http-client/request :chan <!
-        http-client/filter-success! :body
+        http-client/filter-success :body
         continue)))
 
 (defn page-debug []

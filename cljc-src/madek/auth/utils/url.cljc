@@ -11,3 +11,5 @@
   #?(:cljs js/encodeURIComponent
      :clj ring.util.codec/url-encode))
 
+
+;(comment (-> "/auth/info" encode decode))

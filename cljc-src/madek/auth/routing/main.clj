@@ -1,11 +1,12 @@
 (ns madek.auth.routing.main
   (:require
     [clj-yaml.core :as yaml]
-    [logbug.debug :as debug :refer [I>]]
+    [logbug.debug :as debug :refer [I> debug-ns]]
     [logbug.ring :refer [wrap-handler-with-logging]]
     [madek.auth.db.core :as db]
     [madek.auth.html.spa.main :as spa]
     [madek.auth.http.anti-csrf.main :as anti-csrf]
+    [madek.auth.http.session :as session]
     [madek.auth.http.static-resources :as static-resources]
     [madek.auth.routes :as routes]
     [madek.auth.routing.resolve :refer [resolve-table]]
@@ -111,11 +112,12 @@
       wrap-route-dispatch
       wrap-route-resolve
       wrap-json-response
+      spa/wrap
+      session/wrap
       (wrap-json-body {:keywords? true})
       db/wrap-tx
       wrap-keyword-params
       wrap-params
-      spa/wrap
       anti-csrf/wrap
       ring.middleware.cookies/wrap-cookies
       (static-resources/wrap
@@ -134,5 +136,8 @@
   (info "initializing routing ...")
   (let [routes (build-routes options)]
     (info "initialized routing")
-    routes 
-    ))
+    routes ))
+
+
+;#### debug ###################################################################
+;(debug-ns *ns*)

@@ -1,25 +1,34 @@
 (ns madek.auth.http.session
   (:require
-    [buddy.core.codecs :refer [bytes->b64]]
+    [buddy.core.codecs :refer [bytes->b64 bytes->str]]
     [buddy.core.hash :as hash]
     [cuerdas.core :as str]
     [honey.sql :refer [format] :rename {format sql-format}]
     [honey.sql.helpers :as sql]
+    [logbug.debug :refer [debug-ns]]
     [madek.auth.constants :refer [MADEK_SESSION_COOKIE_NAME]]
-    [madek.auth.constants :refer []]
     [madek.auth.utils.core :refer [presence presence!]]
     [next.jdbc :as jdbc]
+    [taoensso.timbre :refer [debug error info spy warn]]
     )
   (:import
     [java.util UUID]
     ))
 
 
+;#### helper ##################################################################
+
+(defn token-hash [token]
+(-> token hash/sha256 bytes->b64 bytes->str))
+
+
+;#### create ##################################################################
+
 (defn session-data [user-auth-system token request]
   (-> user-auth-system
       (select-keys [:auth_system_id :user_id])
       (merge 
-        {:token_hash (-> token hash/sha256 bytes->b64) 
+        {:token_hash (token-hash token) 
          :token_part (str/slice token 0 5)
          :meta_data  [:lift {:user_agent (get-in request [:headers "user-agent"])
                              :remote_addr (get-in request [:remote-addr])}]})))
@@ -44,5 +53,59 @@
                 :secure false}}}))
 
 
+;#### wrap ####################################################################
+
+
+(def expiration-sql-expr
+  [:+ :user_sessions.created_at 
+   [:* :auth_systems.session_max_lifetime_minutes [:raw "INTERVAL '1 minute'"]]])
+
+(def selects 
+  [[:user_sessions.auth_system_id :auth_system_id]
+   [expiration-sql-expr :session_expires_at]
+   [:user_sessions.created_at :signed_in_at]
+   :people.first_name
+   :people.last_name
+   :people.pseudonym
+   [:people.institutional_id :person_institutioal_id]
+   :users.institutional_id
+   :users.email
+   :users.login
+   :user_sessions.user_id])
+
+(defn user-session-query [token-hash]
+  (-> (apply sql/select selects)
+      (sql/from :user_sessions)
+      (sql/join :users [:= :user_sessions.user_id :users.id])
+      (sql/join :people [:= :people.id :users.person_id])
+      (sql/join :auth_systems [:= :user_sessions.auth_system_id :auth_systems.id])
+      (sql/where [:= :user_sessions.token_hash token-hash])
+      (sql/where [:<= [:now] expiration-sql-expr])))
+
+(defn user-session [token-hash tx]
+  (-> token-hash
+      user-session-query
+      (sql-format :inline true)
+      spy
+      (#(jdbc/execute-one! tx %))))
+
+(defn session-token-hashed [request]
+  (some-> request :cookies (get MADEK_SESSION_COOKIE_NAME nil) 
+          :value token-hash))
+
+(defn authenticate [{tx :tx :as request}]
+  (if-let [user-session (some-> request 
+                                session-token-hashed
+                                (user-session tx))]
+    (assoc request :authenticated-entity user-session)
+    request))
+
+
+(defn wrap [handler]
+  (fn [req]
+    (info 'session/handler)
+    (-> req authenticate handler)))
+
+
 ;#### debug ###################################################################
-;(debug-ns *ns*)
+(debug-ns *ns*)

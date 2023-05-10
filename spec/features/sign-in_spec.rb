@@ -51,6 +51,7 @@ feature 'Sign in' do
     uri = Addressable::URI.parse(current_url)
     # we are on the supplied return-to path:
     expect(uri.path).to be== '/auth/info'
+    binding.pry
   end
 
   scenario 'Unsucessfull sign-in: the auth-service returns false' do

@@ -6,21 +6,23 @@
     [taoensso.timbre :refer [debug info warn error spy]]
     ))
 
-(defn navbar-user [user]
-  [:> bs/NavDropdown {:title "Foo"}
-   [:> bs/NavDropdown.Item
-    {:href "Bar"}
-    "Bar"]])
+(defn navbar-user []
+  [:<> 
+   (when-let [user @state/user*]
+     [:> bs/NavDropdown {:title @state/user-name-or-some-identifier*}
+      [:> bs/NavDropdown.Item
+       {:href "Bar"}
+       "TODO sign-out"]])])
 
 (defn header []
   [:> bs/Navbar {:bg :light}
    [:> bs/Container {:class "justify-content-start"}
     [:> bs/Navbar.Brand {:href (path :auth)} "Madek Auth"]]
    [:> bs/Container {:class "justify-content-center"}
-    [:> bs/Nav.Item [:> bs/Nav.Link {:href (path :sign-in)} [:div] " Sign-in"]]
+    ;[:> bs/Nav.Item [:> bs/Nav.Link {:href (path :sign-in)} [:div] " Sign-in"]]
     ]
    [:> bs/Container {:class "justify-content-end"}
-    ;[navbar-user {}]
+    [navbar-user]
     ]])
 
 

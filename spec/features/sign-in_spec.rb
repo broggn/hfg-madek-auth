@@ -51,7 +51,17 @@ feature 'Sign in' do
     uri = Addressable::URI.parse(current_url)
     # we are on the supplied return-to path:
     expect(uri.path).to be== '/auth/info'
-    binding.pry
+
+    # check some content:
+    expect{find("code.user-session-data")}.not_to raise_error 
+    expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error 
+    user_session_data = YAML.load(find("code.user-session-data").text).with_indifferent_access
+    expect(user_session_data[:person_last_name]).to be== @user.person.last_name
+    user_session_id = user_session_data[:session_id]
+    expect(user_session_id).to be
+    expect{UserSession.find(user_session_id)}.not_to raise_error
+    # TODO sign out
+    
   end
 
   scenario 'Unsucessfull sign-in: the auth-service returns false' do

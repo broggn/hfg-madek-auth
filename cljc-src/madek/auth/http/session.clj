@@ -19,7 +19,7 @@
 ;#### helper ##################################################################
 
 (defn token-hash [token]
-(-> token hash/sha256 bytes->b64 bytes->str))
+  (-> token hash/sha256 bytes->b64 bytes->str))
 
 
 ;#### create ##################################################################
@@ -61,17 +61,21 @@
    [:* :auth_systems.session_max_lifetime_minutes [:raw "INTERVAL '1 minute'"]]])
 
 (def selects 
-  [[:user_sessions.auth_system_id :auth_system_id]
+  [
+   [:auth_systems.id :auth_system_id]
+   [:auth_systems.name :auth_system_name]
+   [:people.first_name :person_first_name]
+   [:people.institutional_id :person_institutional_id]
+   [:people.last_name :person_last_name]
+   [:people.pseudonym :person_pseudonym]
+   [:user_sessions.created_at :session_created_at]
+   [:user_sessions.id :session_id]
+   [:users.email :user_email]
+   [:users.id :user_id]
+   [:users.institutional_id :user_institutional_id]
+   [:users.login :user_login]
    [expiration-sql-expr :session_expires_at]
-   [:user_sessions.created_at :signed_in_at]
-   :people.first_name
-   :people.last_name
-   :people.pseudonym
-   [:people.institutional_id :person_institutioal_id]
-   :users.institutional_id
-   :users.email
-   :users.login
-   :user_sessions.user_id])
+   ])
 
 (defn user-session-query [token-hash]
   (-> (apply sql/select selects)

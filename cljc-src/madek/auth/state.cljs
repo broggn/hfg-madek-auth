@@ -1,8 +1,10 @@
 (ns madek.auth.state
   (:require
-    [madek.auth.html.dom :as dom]
     [cljs.pprint :refer [pprint]]
-    [reagent.core :as reagent]
+    [cuerdas.core :as str]
+    [madek.auth.html.dom :as dom]
+    [madek.auth.utils.core :refer [presence]]
+    [reagent.core :as reagent :refer [reaction]]
     [taoensso.timbre :refer [debug info warn error spy]]
     ))
 
@@ -14,6 +16,16 @@
 (def server* (reagent/atom {}))
 
 (def user* (reagent/atom nil))
+
+(def user-name-or-some-identifier* 
+  (reaction 
+    (or (-> (str/join " " [(:person_first_name @user*) 
+                           (:person_last_name @user*)]) 
+            str/trim presence)
+        (-> @user* :person_pseudonym presence)
+        (-> @user* :user_email presence)
+        (-> @user* :user_login presence)
+        (-> @user* :user_id))))
 
 (def state* (reagent/reaction
               {:debug @debug?*

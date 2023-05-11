@@ -15,13 +15,15 @@
 (def routes 
   [["/auth" 
     ["" {:name :auth}]
+    ["/info" {:name :info}]
     ["/sign-in" {}
      ["" {:name :sign-in}]
      ["/:email/auth-systems/" 
       ["" {:name :sign-in-user-auth-systems}]
       [":auth_system_id" {}
        ["/request" :sign-in-user-auth-system-request]
-       ["/sign-in" {:name :sign-in-user-auth-system-sign-in}]]]]]])
+       ["/sign-in" {:name :sign-in-user-auth-system-sign-in}]]]]
+    ["/sign-out" {:name :sign-out}]]])
 
 
 (def router (reitit/router routes))

@@ -28,6 +28,8 @@
 (defn github [] (FontAwesomeIcon #js{:icon fa-free-brands-svg-icons/faGithubSquare :className ""}))
 (defn original [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faFile :className ""}))
 (defn reset [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faTimes :className ""}))
+(defn sign-out [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faArrowRightFromBracket :className ""}))
+
 (defn save [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faSave :className ""}))
 (defn stop [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faMinusSquare :className ""}))
 (defn stores [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faArchive :className ""}))

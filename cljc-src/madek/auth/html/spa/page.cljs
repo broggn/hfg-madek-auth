@@ -4,15 +4,9 @@
     [madek.auth.routes :refer [path]]
     [madek.auth.state :as state]
     [taoensso.timbre :refer [debug info warn error spy]]
+    [madek.auth.html.user :as user]
     ))
 
-(defn navbar-user []
-  [:<> 
-   (when-let [user @state/user*]
-     [:> bs/NavDropdown {:title @state/user-name-or-some-identifier*}
-      [:> bs/NavDropdown.Item
-       {:href "Bar"}
-       "TODO sign-out"]])])
 
 (defn header []
   [:> bs/Navbar {:bg :light}
@@ -22,8 +16,7 @@
     ;[:> bs/Nav.Item [:> bs/Nav.Link {:href (path :sign-in)} [:div] " Sign-in"]]
     ]
    [:> bs/Container {:class "justify-content-end"}
-    [navbar-user]
-    ]])
+    [user/navbar-part-user]]])
 
 
 (defn footer []

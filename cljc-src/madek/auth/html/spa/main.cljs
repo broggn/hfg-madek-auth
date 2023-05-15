@@ -1,5 +1,6 @@
 (ns madek.auth.html.spa.main
   (:require 
+    [madek.auth.http.client.modals :as http-client-modal]
     [reagent.dom :as rdom]
     [madek.auth.html.spa.page :refer [header footer]]
     [madek.auth.state :as state]
@@ -13,6 +14,7 @@
 
 (defn html []
   [:div.container
+   [http-client-modal/modal-component]
    [header]
    [:div.mt-3
     (if-let [page (:page @state/routing*)]

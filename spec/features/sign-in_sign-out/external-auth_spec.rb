@@ -60,7 +60,11 @@ feature 'Sign in' do
     user_session_id = user_session_data[:session_id]
     expect(user_session_id).to be
     expect{UserSession.find(user_session_id)}.not_to raise_error
-    # TODO sign out
+
+    click_on @user.person.last_name
+    find("form button", text: 'Sign out').click
+    expect(current_path).to be== '/'
+    expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound
     
   end
 

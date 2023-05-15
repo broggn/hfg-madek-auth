@@ -8,11 +8,13 @@
 (def LOGGING_CONFIG
   {:min-level [[#{
                   ;"madek.auth.html.history-navigation"
-                  "madek.auth.http.*" 
+                  ;"madek.auth.html.user"
+                  ;"madek.auth.http.*" 
                   ;"madek.auth.main" 
+                  ;"madek.auth.resources.sign-in.*"
+                  ;"madek.auth.resources.sign-out.main"
                   ;"madek.auth.routes"
                   ;"madek.auth.routing.*"
-                  "madek.auth.resources.sign-in.*"
                   ;"madek.auth.routing.main"
                   } :debug]
                [#{

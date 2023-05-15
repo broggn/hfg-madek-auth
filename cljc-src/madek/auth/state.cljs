@@ -17,15 +17,6 @@
 
 (def user* (reagent/atom nil))
 
-(def user-name-or-some-identifier* 
-  (reaction 
-    (or (-> (str/join " " [(:person_first_name @user*) 
-                           (:person_last_name @user*)]) 
-            str/trim presence)
-        (-> @user* :person_pseudonym presence)
-        (-> @user* :user_email presence)
-        (-> @user* :user_login presence)
-        (-> @user* :user_id))))
 
 (def state* (reagent/reaction
               {:debug @debug?*

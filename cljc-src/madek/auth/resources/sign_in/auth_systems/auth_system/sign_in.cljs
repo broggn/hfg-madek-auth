@@ -27,7 +27,8 @@
 
 (defn sign-in []
   (go (some-> 
-        {:json-params (-> @state/routing* :query-params)
+        {:modal-on-response-error false
+         :json-params (-> @state/routing* :query-params)
          :method :post
          :url (path (:name @state/routing*)
                     (:path-params @state/routing*))} 

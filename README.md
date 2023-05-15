@@ -37,7 +37,7 @@ Start test authentication system:
 
 Run a test: 
 
-    ./bin/rspec spec/features/sign-in_spec.rb
+    ./bin/rspec 'spec/features/sign-in_sign-out/external-auth_spec.rb'
 
     
 

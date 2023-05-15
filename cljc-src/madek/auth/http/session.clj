@@ -61,8 +61,7 @@
    [:* :auth_systems.session_max_lifetime_minutes [:raw "INTERVAL '1 minute'"]]])
 
 (def selects 
-  [
-   [:auth_systems.id :auth_system_id]
+  [[:auth_systems.id :auth_system_id]
    [:auth_systems.name :auth_system_name]
    [:people.first_name :person_first_name]
    [:people.institutional_id :person_institutional_id]
@@ -74,8 +73,7 @@
    [:users.id :user_id]
    [:users.institutional_id :user_institutional_id]
    [:users.login :user_login]
-   [expiration-sql-expr :session_expires_at]
-   ])
+   [expiration-sql-expr :session_expires_at]])
 
 (defn user-session-query [token-hash]
   (-> (apply sql/select selects)

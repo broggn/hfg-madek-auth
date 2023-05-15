@@ -26,7 +26,6 @@
     [:form.form
      {:on-submit (fn [e]
                    (.preventDefault e)
-                   (info :on-submit)
                    (continue))}
      [:div.mb-3
       [:label.col-form-label {:for :email}  

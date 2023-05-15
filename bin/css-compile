@@ -2,8 +2,8 @@
 set -euxo
 PROJECT_DIR="$(cd -- "$(dirname "${BASH_SOURCE}")" ; cd .. > /dev/null 2>&1 && pwd -P)"
 cd $PROJECT_DIR
-./bin/npx node-sass --watch --recursive \
-    --output-style nested --source-map true --source-map-contents true --precision 6 \
+./bin/npx node-sass --recursive \
+    --output-style compressed --source-map false --precision 6 \
     --output resources/auth/public/css \
     --include-path node_modules \
     css-src

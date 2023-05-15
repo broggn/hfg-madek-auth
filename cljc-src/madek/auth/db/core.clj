@@ -36,10 +36,10 @@
                    db-min-pool-size-key db-max-pool-size-key])
 
 (def cli-options
-  [[nil (long-opt-for-key db-name-key) "Database name, falls back to PGDATABASE | madek.auth"
+  [[nil (long-opt-for-key db-name-key) "Database name, falls back to PGDATABASE | madek"
     :default (or (some-> db-name-key env)
                  (some-> :pgdatabase env)
-                 "cider_ci_v6")]
+                 "madek")]
    [nil (long-opt-for-key db-port-key) "Database port, falls back to PGPORT or 5432"
     :default (or (some-> db-port-key env Integer/parseInt)
                  (some-> :pgport env Integer/parseInt)
@@ -50,11 +50,11 @@
     :default (or (some-> db-host-key env)
                  (some-> :pghost env)
                  "localhost")]
-   [nil (long-opt-for-key db-user-key) "Database user, falls back to PGUSER | 'madek.auth'"
+   [nil (long-opt-for-key db-user-key) "Database user, falls back to PGUSER | 'madek'"
     :default (or (some-> db-user-key env)
                  (some-> :pguser env)
                  "madek")]
-   [nil (long-opt-for-key db-password-key) "Database password, falls back to PGPASSWORD |'madek.auth'"
+   [nil (long-opt-for-key db-password-key) "Database password, falls back to PGPASSWORD |'madek'"
     :default (or (some-> db-password-key env)
                  (some-> :pgpassword env)
                  "madek")]

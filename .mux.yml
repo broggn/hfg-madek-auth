@@ -35,3 +35,7 @@ windows:
     name: test-auth-system
     command: |
       ./bin/test-auth-system
+  9:
+    name: css-watch
+    command: |
+      ./bin/css-watch

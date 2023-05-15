@@ -2,8 +2,10 @@
 .nrepl-port
 .shadow-cljs/
 logs/
+madek-auth.jar
 node_modules/
 node_modules/.package-lock.json
 resources/auth/public/css/
 resources/auth/public/js/
+target/
 tmp/

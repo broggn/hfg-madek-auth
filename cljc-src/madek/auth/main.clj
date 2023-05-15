@@ -7,8 +7,8 @@
     [madek.auth.server :as server]
     [madek.auth.utils.logging :as logging]
     [madek.auth.utils.repl :as repl]
-    [taoensso.timbre :refer [debug error info spy warn]]
-    ))
+    [taoensso.timbre :refer [debug error info spy warn]])
+  (:gen-class))
 
 (def cli-options
   (concat

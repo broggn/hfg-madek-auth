@@ -9,7 +9,6 @@ feature 'Basic' do
 
   scenario 'ExtAuthSystem factory works' do
     auth_system = FactoryBot.create :auth_system
-    binding.pry
   end
 
 end

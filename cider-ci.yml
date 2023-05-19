@@ -1,0 +1,92 @@
+jobs:
+
+  build:
+    name: Build uberjar
+    run_when: &DEFAULT_TRIGGERS
+      any branch matches:
+        type: branch
+        include_match: ^.+$
+    context:
+      include: cider-ci/context-components/build.yml
+
+  lint:
+    name: "Linting"
+    description: |
+      Code checks: static checks and metrics: complexity, duplication, and format,
+      also other consistency checks.
+    priority: 3
+    run_when: *DEFAULT_TRIGGERS
+    context:
+      task_defaults:
+        include: [cider-ci/task-components/env.yml]
+      contexts:
+        include:
+          - path: cider-ci/context-components/lint/git-lint.yml
+            submodule: [datalayer]
+
+  check-feature-tasks:
+    name: Check if feature tasks are up to date
+    run_when: *DEFAULT_TRIGGERS
+    context:
+      include: cider-ci/context-components/check-feature-tasks.yml
+
+
+  specs-preflight-check:
+    name: Feature Specs Preflight Check
+    depends_on: &PREFLIGHT_DEPS
+      build passed: &BUILD
+        type: job
+        job_key: build
+        states: [passed]
+    run_when: *PREFLIGHT_DEPS
+    description: |
+      This jobs checks with a dummy execution if all scripts are working
+      together.
+    context:
+      include: 
+        - cider-ci/context-components/test-base.yml
+      tasks: 
+        dummy: 
+          scripts:
+            test:
+              body: "echo '✔︎ just a no-op dummy' ; exit 0"
+
+  basic-features:
+    name: Basic features
+    depends_on: &BASIC_DEPS 
+      preflight passed: &PREFLIGHT
+        type: job
+        job_key: specs-preflight-check
+        states: [passed]
+      check feature tasks: &FEATURE_TASKS 
+        type: job
+        job_key: check-feature-tasks
+        states: [passed]
+      lint: &LINT
+        type: job
+        job_key: lint
+        states: [passed]
+    run_when: *BASIC_DEPS
+    description: |
+      Some basice features.
+      any branch matches:
+        type: branch
+        include_match: ^.+$
+    context:
+      include: 
+        - cider-ci/context-components/basic-features.yml
+
+  extauth-features:
+    depends_on: &EXTAUTH_DEPS
+      basic passed: &BASIC
+        type: job
+        job_key: basic-features
+        states: [passed]
+    run_when: *EXTAUTH_DEPS
+    name: External authentication features
+    description: |
+      External authentication features. 
+    context:
+      include: 
+        - cider-ci/context-components/extauth-features.yml
+

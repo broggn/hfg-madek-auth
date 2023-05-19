@@ -1,0 +1,12 @@
+include: 
+  - cider-ci/context-components/test-base.yml
+
+task_defaults:
+  include:
+    - cider-ci/task-components/test-auth-system.yml
+    - cider-ci/task-components/rspec.yml
+
+tasks:
+  include: 
+    - cider-ci/generators/extauth_features.yml
+

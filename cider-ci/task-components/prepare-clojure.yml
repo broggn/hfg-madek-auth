@@ -1,0 +1,12 @@
+traits:
+  asdf: true
+
+scripts:
+  madek-auth_prepare-clojure:
+    exclusive_executor_resource: madek-auth_prepare-clojure
+    body: |
+      #/bin/env bash
+      set -euo pipefail
+      cd $AUTH_DIR
+      ./bin/env/clojure-setup
+

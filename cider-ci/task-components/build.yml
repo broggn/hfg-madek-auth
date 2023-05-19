@@ -1,0 +1,29 @@
+include:
+  - cider-ci/task-components/prepare-clojure.yml
+  - cider-ci/task-components/prepare-java.yml
+  - cider-ci/task-components/prepare-nodejs.yml
+
+traits:
+  asdf: true
+
+scripts:
+  auth-build:
+    exclusive_executor_resource: auth-build
+    start_when:
+      madek-auth_prepare-clojure:
+        script_key: madek-auth_prepare-clojure
+      madek-auth_prepare-java:
+        script_key: madek-auth_prepare-java
+      madek-auth_prepare-nodejs:
+        script_key: madek-auth_prepare-nodejs
+    body: |
+      #/bin/env bash
+      set -euo pipefail
+      cd $AUTH_DIR
+      # build uberjar
+      ./bin/build
+      # test if jar exists 
+      test -f madek-auth.jar
+      # test if jar executes
+      java -jar madek-auth.jar -h
+

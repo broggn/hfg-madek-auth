@@ -6,7 +6,7 @@ cd $PROJECT_DIR
 
 ${PROJECT_DIR}/bin/env/java-setup
 ${PROJECT_DIR}/bin/env/clojure-setup
-${PROJECT_DIR}/bin/env/nodejs-setup
+# ${PROJECT_DIR}/bin/env/nodejs-setup # implicit in npx
 
 rm -rf resources/media-service/public/js/
 ./bin/npx shadow-cljs compile madek-auth

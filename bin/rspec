@@ -7,10 +7,9 @@ cd ${PROJECT_DIR}
 
 ./bin/env/firefox-setup
 ./bin/env/geckodriver-setup
-
 ./datalayer/bin/db-set-env
-
 ./bin/env/ruby-setup
+
 bundle exec rspec "$@"
 
 # vi: ft=sh

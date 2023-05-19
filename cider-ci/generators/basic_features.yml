@@ -1,0 +1,13 @@
+---
+"./spec/features/basic_spec.rb[1:1]":
+  name: "./spec/features/basic_spec.rb[1:1]"
+  description: Basic Factories work
+  environment_variables:
+    RSPEC_NAME: "./spec/features/basic_spec.rb:4"
+    RSPEC_TEST: "./spec/features/basic_spec.rb[1:1]"
+"./spec/features/basic_spec.rb[1:2]":
+  name: "./spec/features/basic_spec.rb[1:2]"
+  description: Basic ExtAuthSystem factory works
+  environment_variables:
+    RSPEC_NAME: "./spec/features/basic_spec.rb:10"
+    RSPEC_TEST: "./spec/features/basic_spec.rb[1:2]"

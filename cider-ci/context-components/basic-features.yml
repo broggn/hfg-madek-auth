@@ -1,0 +1,11 @@
+include: 
+  - cider-ci/context-components/test-base.yml
+
+task_defaults:
+  include:
+    - cider-ci/task-components/rspec.yml
+
+tasks:
+  include: 
+    - cider-ci/generators/basic_features.yml
+

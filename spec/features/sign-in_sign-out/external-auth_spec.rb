@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Sign in' do
+feature 'Sign in / sign out via ext auth', ci_group: :extauth do
 
   let :ext_auth_port do
-    ENV['MADE_EXT_AUTH_PORT'] || '3167'
+    ENV['TEST_AUTH_SYSTEM_PORT'] || '3167'
   end
 
   let :ext_auth_key_pair do 

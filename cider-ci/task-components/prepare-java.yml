@@ -1,0 +1,12 @@
+traits:
+  asdf: true
+
+scripts:
+  madek-auth_prepare-java:
+    exclusive_executor_resource: madek-auth_prepare-java
+    body: |
+      #/bin/env bash
+      set -euo pipefail
+      cd $AUTH_DIR
+      ./bin/env/java-setup
+

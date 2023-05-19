@@ -1,0 +1,56 @@
+ports: 
+  TEST_AUTH_SYSTEM_PORT:
+    min: 3100
+    max: 3200
+
+scripts:
+
+  test-auth-system_rug:
+    start_when:
+      bundled:
+        script_key: madek-auth_prepare-ruby
+      # the following is not a hard dependency, this ist just not fall
+      # into a timeout when building the uberjar taks very long
+      the uberjar is ready:
+        script_key: auth-build
+    timeout: 5 Minutes
+    body: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      cd $AUTH_DIR
+      echo ${TEST_AUTH_SYSTEM_PORT}
+      ./bin/test-auth-system --port ${TEST_AUTH_SYSTEM_PORT}
+
+  test-auth-system_is-serving:
+    timeout: 30 seconds
+    start_when:
+      the service is running:
+        script_key: test-auth-system_rug
+        states: [executing]
+    body: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      until curl --silent --fail -I "http://localhost:${TEST_AUTH_SYSTEM_PORT}" ; do
+        sleep 1;
+      done
+
+  test:
+    # either passes in less than 20 seconds or not and then would run for minutes
+    start_when:
+      test-auth-system is serving:
+        script_key: test-auth-system_is-serving
+
+  shutdown_test-auth-system:
+    timeout: 3 Seconds
+    body: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      kill -INT $(lsof -t -wni tcp:${TEST_AUTH_SYSTEM_PORT})
+      sleep 1
+    start_when:
+      test is terminal:
+        script_key: test
+        states: [aborted, defective, passed, failed, skipped]
+      we are serving:
+        script_key: test-auth-system_is-serving
+

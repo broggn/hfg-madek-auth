@@ -1,0 +1,13 @@
+include:    
+  - path: cider-ci/context-components/env.yml
+
+task_defaults:
+
+  include:
+    - path: cider-ci/task-components/build.yml
+    - submodule: [datalayer]
+      path: cider-ci/task-components/database.yml
+    - path: cider-ci/task-components/service.yml
+    - path: cider-ci/task-components/configure-rspec-database.yml
+
+

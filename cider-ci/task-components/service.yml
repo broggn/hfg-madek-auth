@@ -1,0 +1,52 @@
+include:
+  - cider-ci/task-components/build.yml
+
+traits:
+  curl: true
+
+scripts:
+
+  auth-run:
+    body: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      cd $AUTH_DIR
+      source $DATALAYER_DIR/cider-ci/bin/pg_env_set
+      mkdir -p tmp
+      PGDATABASE=${DATABASE} \
+        java -jar madek-auth.jar server \
+          --http-server-port ${MADEK_AUTH_HTTP_PORT} \
+          --pid-file tmp/pid
+
+    start_when:
+      the database has been created:
+        script_key: create-database
+      auth-build:
+        script_key: auth-build
+
+  auth-is-running:
+    body: |
+      until curl --silent --fail -I  \
+        http://localhost:${MADEK_AUTH_HTTP_PORT};
+        do sleep 1;
+      done
+    start_when:
+      run auth is executing:
+        script_key: auth-run
+        states: [executing]
+
+  auth-shutdown:
+    start_when:
+      test is terminal:
+        script_key: test
+        states: [aborted, passed, failed, skipped]
+    body: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+      cd ${AUTH_DIR}
+      kill $(cat tmp/pid)
+
+  test:
+    start_when:
+      the auth is running:
+        script_key: auth-is-running

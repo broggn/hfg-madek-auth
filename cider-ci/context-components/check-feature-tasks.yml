@@ -1,0 +1,19 @@
+include: 
+  - path: cider-ci/context-components/env.yml
+
+
+task_defaults:
+  include:
+    - path: cider-ci/task-components/prepare-ruby.yml
+
+tasks:
+  check:
+    scripts:
+      test: 
+        start_when:
+          madek-auth_prepare-ruby:
+            script_key: madek-auth_prepare-ruby
+        body: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+          ./cider-ci/generators/bin/feature-tasks-check

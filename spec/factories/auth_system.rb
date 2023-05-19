@@ -7,8 +7,8 @@ end
 FactoryBot.define do
   factory :auth_system do
     type {"external"}
-    name {Faker::Company.name}
-    id {name.gsub(/\s+/, '-').downcase}
+    name {Faker::Name.unique.name}
+    id {"auth-sys_#{name.downcase.gsub(/[^a-z]/,'-') }"}
 
     transient do
       internal_key { ECKey.new }

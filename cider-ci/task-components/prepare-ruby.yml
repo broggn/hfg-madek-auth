@@ -1,0 +1,14 @@
+traits:
+  asdf: true
+
+scripts:
+  madek-auth_prepare-ruby:
+    exclusive_executor_resource: madek-auth_prepare-ruby
+    timeout: "20 Minutes" # first installation/compilation of ruby is slow
+    body: |
+      #/bin/env bash
+      set -euo pipefail
+      cd $AUTH_DIR
+      ./bin/env/ruby-setup
+      bundle
+

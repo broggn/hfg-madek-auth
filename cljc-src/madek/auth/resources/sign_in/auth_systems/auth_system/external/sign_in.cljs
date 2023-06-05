@@ -1,4 +1,4 @@
-(ns madek.auth.resources.sign-in.auth-systems.auth-system.sign-in
+(ns madek.auth.resources.sign-in.auth-systems.auth-system.external.sign-in
   (:require
     [madek.auth.utils.json :as json]
     [lambdaisland.uri :as uri]

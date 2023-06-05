@@ -1,4 +1,4 @@
-(ns madek.auth.resources.sign-in.auth-systems.auth-system.pki
+(ns madek.auth.resources.sign-in.auth-systems.auth-system.external.pki
   (:require
     [buddy.core.keys :as keys]
     [buddy.sign.jwt :as jwt]

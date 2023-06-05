@@ -105,7 +105,7 @@
 
 (defn wrap [handler]
   (fn [req]
-    (info 'session/handler)
+    (debug 'session/handler)
     (-> req authenticate handler)))
 
 

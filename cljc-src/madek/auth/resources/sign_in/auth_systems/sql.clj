@@ -11,16 +11,19 @@
 (def auth-systems-users-sql-cond
   [:or 
    [:exists (-> (sql/select true)
-                (sql/from :auth_systems_users)
-                (sql/where [:= :auth_systems_users.auth_system_id :auth_systems.id])
-                (sql/where [:= :auth_systems_users.user_id :users.id]))]
+                (sql/from [:auth_systems_users :asus])
+                (sql/where [:= :asus.auth_system_id :auth_systems.id])
+                (sql/where [:= :asus.user_id :users.id])
+                (sql/where [:or 
+                            [:= :asus.expires_at nil]
+                            [:> :asus.expires_at [:now]]]))]
 
    [:exists (-> (sql/select true) 
                 (sql/from :groups_users)
                 (sql/where [:= :groups_users.user_id :users.id])
                 (sql/join :groups [:= :groups.id :groups_users.group_id])
-                (sql/join :auth_systems_groups [:= :auth_systems_groups.group_id :groups.id])
-                (sql/where [:= :auth_systems.id :auth_systems_groups.auth_system_id])
+                (sql/join [:auth_systems_groups :asgs] [:= :asgs.group_id :groups.id])
+                (sql/where [:= :auth_systems.id :asgs.auth_system_id])
                 )]])
 
 (defn auth-systems-query [email]
@@ -37,7 +40,7 @@
       (sql/where [:= [:lower :users.email] [:lower email]])))
 
 (comment
-  (-> (auth-systems-query "carson_c18696d2@kiehn.test")
+  (-> (auth-systems-query "hattie_price_4e2722bf@swift.example")
       spy
       (sql-format :inline true)
       spy

@@ -1,4 +1,4 @@
-(ns madek.auth.resources.sign-in.auth-systems.auth-system.request
+(ns madek.auth.resources.sign-in.auth-systems.auth-system.external.request
   (:require
     [buddy.core.keys :as keys]
     [buddy.sign.jwt :as jwt]
@@ -7,7 +7,7 @@
     [honey.sql.helpers :as sql]
     [logbug.debug :refer [debug-ns]]
     [madek.auth.db.core :refer [get-ds]]
-    [madek.auth.resources.sign-in.auth-systems.auth-system.pki :refer [private-key! public-key!]]
+    [madek.auth.resources.sign-in.auth-systems.auth-system.external.pki :refer [private-key! public-key!]]
     [madek.auth.resources.sign-in.auth-systems.sql :refer [auth-systems-query]]
     [madek.auth.routes :refer [path]]
     [madek.auth.utils.core :refer [presence]]
@@ -37,7 +37,7 @@
          :sign-in-url (str base-url
                            (path :sign-in-user-auth-system-sign-in
                                  (select-keys user-auth-system 
-                                              [:auth_system_id :email])))})))
+                                              [:auth_system_type :auth_system_id :email])))})))
 
 (defn handler [{{email :email
                  auth_system_id :auth_system_id
@@ -58,4 +58,4 @@
 
 
 ;;; debug ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(debug-ns *ns*)
+(debug-ns *ns*)

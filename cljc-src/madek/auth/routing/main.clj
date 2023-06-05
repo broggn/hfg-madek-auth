@@ -8,8 +8,7 @@
     [madek.auth.http.anti-csrf.main :as anti-csrf]
     [madek.auth.http.session :as session]
     [madek.auth.http.static-resources :as static-resources]
-    [madek.auth.routes :as routes]
-    [madek.auth.routing.resolve :refer [resolve-table]]
+    [madek.auth.routing.resolve :as resolve]
     [ring.middleware.accept]
     [ring.middleware.content-type :refer [wrap-content-type]]
     [ring.middleware.cookies]
@@ -28,30 +27,9 @@
 ;;; routes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-
-(defn route-resolve [handler request]
-  (debug 'route-resolve (:uri request))
-  (if-let [route (some-> request :uri
-                         routes/route)]
-    (let [{{route-name :name} :data} route
-          params-coerced (routes/coerce-params route)
-          ; replace plain :path-params with coerced ones
-          route (update route :path-params
-                        #(merge {} % (:path params-coerced)))]
-      (debug 'route route)
-      (debug 'route-coreced-params params-coerced)
-      (debug "route match" route-name)
-      (handler (-> request
-                   (assoc
-                     :route route
-                     :route-name route-name
-                     :route-handler (resolve-table route-name))
-                   (update-in [:params] #(merge {} % (:path-params route))))))
-    (handler request)))
-
 (defn wrap-route-resolve [handler]
   (fn [request]
-    (route-resolve handler request)))
+    (resolve/route-resolve handler request)))
 
 (defn route-dispatch [handler request]
   (if-let [route-handler (:route-handler request)]

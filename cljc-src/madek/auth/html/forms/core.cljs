@@ -7,7 +7,7 @@
     [madek.auth.html.icons :as icons]
     [madek.auth.utils.core :refer [keyword presence str]]
     [reagent.core :as reagent :refer [atom]]
-    [taoensso.timbre :as logging]))
+    [taoensso.timbre :refer [debug error info spy warn]]))
 
 
 
@@ -22,6 +22,7 @@
     (case type
       :number (int value)
       :text (str value)
+      :password (str value)
       value)))
 
 
@@ -82,11 +83,12 @@
    (when hint [:p [:small hint]]) ])
 
 (defn input-component
-  [data* ks & {:keys [label hint type element placeholder disabled rows
-                      on-change post-change
+  [data* ks & {:keys [label hint classes type element placeholder 
+                      disabled rows on-change post-change
                       prepend append reset-default]
                :or {label (last ks)
                     hint nil
+                    classes [:mb-3]
                     disabled false
                     type :text
                     rows 10
@@ -96,7 +98,7 @@
                     prepend nil
                     append nil
                     reset-default nil}}]
-  [:div.form-group
+  [:div {:class classes}
    [:label {:for (last ks)}
     (if (= label (last ks))
       [:strong label]

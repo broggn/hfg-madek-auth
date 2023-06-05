@@ -7,15 +7,11 @@
 
 (def LOGGING_CONFIG
   {:min-level [[#{
-                  ;"madek.auth.html.history-navigation"
-                  ;"madek.auth.html.user"
+                  "madek.auth.resources.sign-in.auth-systems.auth-system.password.*"
                   ;"madek.auth.http.*" 
                   ;"madek.auth.main" 
                   ;"madek.auth.resources.sign-in.*"
-                  ;"madek.auth.resources.sign-out.main"
-                  ;"madek.auth.routes"
                   ;"madek.auth.routing.*"
-                  ;"madek.auth.routing.main"
                   } :debug]
                [#{
                   #?(:clj "com.zaxxer.hikari.*")

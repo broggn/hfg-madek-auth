@@ -1,4 +1,4 @@
-(ns madek.auth.resources.sign-in.auth-systems.auth-system.sign-in
+(ns madek.auth.resources.sign-in.auth-systems.auth-system.external.sign-in
   (:require
     [buddy.core.keys :as keys]
     [buddy.sign.jwt :as jwt]
@@ -8,7 +8,7 @@
     [logbug.debug :refer [debug-ns]]
     [madek.auth.db.core :refer [get-ds]]
     [madek.auth.http.session :refer [create-user-session-response]]
-    [madek.auth.resources.sign-in.auth-systems.auth-system.pki :refer [private-key! public-key!]]
+    [madek.auth.resources.sign-in.auth-systems.auth-system.external.pki :refer [private-key! public-key!]]
     [madek.auth.resources.sign-in.auth-systems.sql :refer [auth-systems-query]]
     [madek.auth.routes :refer [path]]
     [madek.auth.utils.core :refer [presence]]
@@ -70,12 +70,8 @@
           request-claims (validate-request-claims! sign-in-request-token internal-pub-key)
           _ (validate-response-claims! request-claims response-claims)
           user-auth-system (-> (query (:email response-claims) auth_system_id)                
-                               spy
                                (sql-format :inline true)
-                               spy
-                               (#(jdbc/execute-one! tx %))
-                               spy
-                               )]
+                               (#(jdbc/execute-one! tx %)))]
       (when-not user-auth-system 
         (throw (ex-info "No suitable authentication-system found!" 
                         {:status 401})))
@@ -88,4 +84,4 @@
      :body {:error_message "No authentication system found."}}))
 
 ;;; debug ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(debug-ns *ns*)
+;(debug-ns *ns*)

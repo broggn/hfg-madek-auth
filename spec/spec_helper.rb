@@ -28,7 +28,14 @@ RSpec.configure do |config|
     $logger.info "SPEC_SEED='#{@spec_seed}'"
   end
 
-  #config.include FactoryBot::Syntax::Methods
+  config.after :each do |example|
+    if example.exception 
+      if ENV['PRY_ON_EXCEPTION'].presence
+        logger.error example.exception
+        binding.pry
+      else
+        logger.warn("set PRY_ON_EXCEPTION to stop and pry after a failed example")
+      end
+    end
+  end
 end
-
-

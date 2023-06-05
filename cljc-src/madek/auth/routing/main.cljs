@@ -5,7 +5,7 @@
     [cuerdas.core :as str]
     [madek.auth.html.history-navigation :as navigation]
     [madek.auth.routes :as routes :refer [path navigate!]]
-    [madek.auth.routing.resolve :refer [routes-resources]]
+    [madek.auth.routing.resolve :as resolve]
     [madek.auth.state :as state]
     [madek.auth.utils.url :as url]
     [madek.auth.utils.yaml :as yaml]
@@ -17,8 +17,7 @@
 
 
 (defn on-navigate [url match]
-  (let [name (get-in match[:data :name])
-        component (get routes-resources name)]
+  (let [component (resolve/resolve match)]
     (as-> match state
       (assoc state :name name)
       (assoc state :page (-> component :page))

@@ -12,6 +12,10 @@ DB migrations: not in final state yet
 
 Complete rebase pending!
 
+### TODO
+
+* accept login in addition to email
+
 
 ## Development
 

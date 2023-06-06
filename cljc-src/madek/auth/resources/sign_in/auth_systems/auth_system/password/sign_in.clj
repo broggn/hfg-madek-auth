@@ -14,7 +14,6 @@
     [taoensso.timbre :refer [debug error info spy warn]]))
 
 
-
 (defn auth-system-user-password-hash-query [email]
   (-> (sql/select [:auth_systems_users.data :password_hash]
                   :auth_systems_users.auth_system_id
@@ -25,14 +24,7 @@
       (sql/where [:in :users.id 
                   (-> email auth-systems-query
                       (dissoc :select-distinct)
-                      (sql/select-distinct :users.id)
-                      )])))
-
-(comment 
-  (-> "elma_9a23a0f5@ondricka-flatley.example"
-      auth-system-user-password-hash-query
-      (sql-format :inline true)
-      ))
+                      (sql/select-distinct :users.id))])))
 
 (defn password-check-query [password password-hash]
   (sql/select [[:= password-hash 

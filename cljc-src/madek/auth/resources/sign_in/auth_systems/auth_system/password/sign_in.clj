@@ -22,10 +22,17 @@
       (sql/from :users)
       (sql/join :auth_systems_users [:= :auth_systems_users.user_id :users.id])
       (sql/where [:= :auth_systems_users.auth_system_id "password"])
-      (sql/where [:= [:lower :users.email] [:lower email]])
-      (sql/where [:or 
-                  [:= :auth_systems_users.expires_at nil]
-                  [:> :auth_systems_users.expires_at [:now]]])))
+      (sql/where [:in :users.id 
+                  (-> email auth-systems-query
+                      (dissoc :select-distinct)
+                      (sql/select-distinct :users.id)
+                      )])))
+
+(comment 
+  (-> "elma_9a23a0f5@ondricka-flatley.example"
+      auth-system-user-password-hash-query
+      (sql-format :inline true)
+      ))
 
 (defn password-check-query [password password-hash]
   (sql/select [[:= password-hash 

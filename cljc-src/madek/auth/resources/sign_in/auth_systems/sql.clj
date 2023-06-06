@@ -39,12 +39,3 @@
       (sql/where [:= :users.is_deactivated false]) ; we might have to change this for ad-hoc sign-up
       (sql/where [:= [:lower :users.email] [:lower email]])))
 
-(comment
-  (-> (auth-systems-query "hattie_price_4e2722bf@swift.example")
-      spy
-      (sql-format :inline true)
-      spy
-      (#(jdbc/execute! (get-ds) %))
-      ))
-
-

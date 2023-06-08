@@ -11,28 +11,41 @@
   environment_variables:
     RSPEC_NAME: "./spec/features/basic_spec.rb:10"
     RSPEC_TEST: "./spec/features/basic_spec.rb[1:2]"
-"./spec/features/sign-in_sign-out/password_spec.rb[1:1]":
-  name: "./spec/features/sign-in_sign-out/password_spec.rb[1:1]"
+"./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:1]":
+  name: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:1]"
   description: Sign in /out with password Sign in with proper password works
   environment_variables:
-    RSPEC_NAME: "./spec/features/sign-in_sign-out/password_spec.rb:9"
-    RSPEC_TEST: "./spec/features/sign-in_sign-out/password_spec.rb[1:1]"
-"./spec/features/sign-in_sign-out/password_spec.rb[1:2]":
-  name: "./spec/features/sign-in_sign-out/password_spec.rb[1:2]"
-  description: Sign in /out with password Sign in wrong password fails
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb:9"
+    RSPEC_TEST: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:1]"
+"./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:2]":
+  name: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:2]"
+  description: Sign in /out with password Sign in with wrong password fails
   environment_variables:
-    RSPEC_NAME: "./spec/features/sign-in_sign-out/password_spec.rb:35"
-    RSPEC_TEST: "./spec/features/sign-in_sign-out/password_spec.rb[1:2]"
-"./spec/features/sign-in_sign-out/password_spec.rb[1:3]":
-  name: "./spec/features/sign-in_sign-out/password_spec.rb[1:3]"
-  description: Sign in /out with password Expired password does not show in available
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb:35"
+    RSPEC_TEST: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:2]"
+"./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb[1:1]":
+  name: "./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb[1:1]"
+  description: Sign in with deactivated account Deactivated account does not password
+    authentication in available auth systems
+  environment_variables:
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb:16"
+    RSPEC_TEST: "./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb[1:1]"
+"./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb[1:2]":
+  name: "./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb[1:2]"
+  description: Sign in with deactivated account Sign in with deactivated account fails
+  environment_variables:
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb:25"
+    RSPEC_TEST: "./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb[1:2]"
+"./spec/features/sign-in_sign-out/passwords/password-expired_spec.rb[1:1]":
+  name: "./spec/features/sign-in_sign-out/passwords/password-expired_spec.rb[1:1]"
+  description: Sign in with expired password Expired password does not show in available
     auth systems
   environment_variables:
-    RSPEC_NAME: "./spec/features/sign-in_sign-out/password_spec.rb:50"
-    RSPEC_TEST: "./spec/features/sign-in_sign-out/password_spec.rb[1:3]"
-"./spec/features/sign-in_sign-out/password_spec.rb[1:4]":
-  name: "./spec/features/sign-in_sign-out/password_spec.rb[1:4]"
-  description: Sign in /out with password Sign in with expired password fails
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-expired_spec.rb:9"
+    RSPEC_TEST: "./spec/features/sign-in_sign-out/passwords/password-expired_spec.rb[1:1]"
+"./spec/features/sign-in_sign-out/passwords/password-expired_spec.rb[1:2]":
+  name: "./spec/features/sign-in_sign-out/passwords/password-expired_spec.rb[1:2]"
+  description: Sign in with expired password Sign in with expired password fails
   environment_variables:
-    RSPEC_NAME: "./spec/features/sign-in_sign-out/password_spec.rb:63"
-    RSPEC_TEST: "./spec/features/sign-in_sign-out/password_spec.rb[1:4]"
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-expired_spec.rb:22"
+    RSPEC_TEST: "./spec/features/sign-in_sign-out/passwords/password-expired_spec.rb[1:2]"

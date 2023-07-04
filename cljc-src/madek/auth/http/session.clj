@@ -58,7 +58,7 @@
 
 (def expiration-sql-expr
   [:+ :user_sessions.created_at 
-   [:* :auth_systems.session_max_lifetime_minutes [:raw "INTERVAL '1 minute'"]]])
+   [:* :auth_systems.session_max_lifetime_hours [:raw "INTERVAL '1 hour'"]]])
 
 (def selects 
   [[:auth_systems.id :auth_system_id]

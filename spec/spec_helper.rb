@@ -1,3 +1,6 @@
+require 'pathname'
+PROJECT_DIR = Pathname.new(__FILE__).join('../..').realpath
+
 require 'capybara/rspec'
 require 'faker'
 require 'logger'

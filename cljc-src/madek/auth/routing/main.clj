@@ -9,6 +9,7 @@
     [madek.auth.http.session :as session]
     [madek.auth.http.static-resources :as static-resources]
     [madek.auth.routing.resolve :as resolve]
+    [madek.auth.utils.ring-audits :as ring-audits]
     [ring.middleware.accept]
     [ring.middleware.content-type :refer [wrap-content-type]]
     [ring.middleware.cookies]
@@ -88,6 +89,7 @@
   (I> wrap-handler-with-logging
       not-found-handler
       wrap-route-dispatch
+      ring-audits/wrap
       wrap-route-resolve
       wrap-json-response
       spa/wrap

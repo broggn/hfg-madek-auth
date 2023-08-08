@@ -49,9 +49,9 @@
                   (.preventDefault e)
                   (submit-sign-in))}
     [:div.mb-3
-     (let [email-data* (reaction {:email (get-in @state/routing* 
-                                                 [:path-params :email])})]
-       [forms/input-component email-data*[:email]
+     (let [email-or-login-data* (reaction {:email-or-login (get-in @state/routing* 
+                                                 [:query-params :email-or-login])})]
+       [forms/input-component email-or-login-data* [:email-or-login]
         :disabled true])]
     [:div
      [forms/input-component data* [:password]

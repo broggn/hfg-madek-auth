@@ -88,7 +88,6 @@
   (-> token-hash
       user-session-query
       (sql-format :inline true)
-      spy
       (#(jdbc/execute-one! tx %))))
 
 (defn session-token-hashed [request]
@@ -110,4 +109,4 @@
 
 
 ;#### debug ###################################################################
-(debug-ns *ns*)
+;(debug-ns *ns*)

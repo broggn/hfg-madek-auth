@@ -2,6 +2,7 @@
 .nrepl-port
 .shadow-cljs/
 logs/
+log/
 madek-auth.jar
 node_modules/
 node_modules/.package-lock.json

@@ -12,7 +12,6 @@
       sql-format
       (#(jdbc/execute! tx %))))
 
-(defn handler [{{email :email} :params tx :tx :as request}]
-  (info request)
-  (info email)
-  {:body (auth-systems email tx)})
+(defn handler [{{email-or-login :email-or-login} :params tx :tx :as request}]
+  {:body (auth-systems email-or-login tx)
+   :status 200})

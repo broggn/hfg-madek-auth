@@ -2,19 +2,21 @@
   (:require
     [cljs.core.async :refer [go go-loop]]
     [cljs.pprint :refer [pprint]]
+    [clojure.walk :refer [stringify-keys]]
     [madek.auth.html.forms.core :as forms]
     [madek.auth.html.icons :as icons]
     [madek.auth.http.client.core :as http-client]
     [madek.auth.routes :refer [navigate! path]]
     [madek.auth.state :as state :refer [debug?* hidden-routing-state-component]]
     [madek.auth.utils.core :refer [presence]]
+    [madek.auth.utils.query-params :as query-params]
     [reagent.core :as reagent :refer [reaction] :rename {atom ratom}]
     [taoensso.timbre :refer [debug error info spy warn]]))
 
 
 (defonce data* (ratom {}))
 
-(defonce email* (reaction (some-> @state/state* :routing :path-params :email)))
+(defonce email-or-login* (reaction (some-> @state/state* :routing :query-params :email-or-login)))
 
 (defn request-auth-systems [& _]
   (reset! data* nil)
@@ -35,9 +37,8 @@
 (defn submit-password-sign-in [sys password]
   (info 'submit-password-sign-in password)
   (go (-> {:url (path :sign-in-user-auth-system-request  
-                      {:auth_system_id (:auth_system_id sys)
-                       :email @email*}
-                      (merge {} (:query-params @state/routing*)))
+                      {:auth_system_id (:auth_system_id sys)} 
+                      (merge {:email-or-login @email-or-login*} (:query-params @state/routing*)))
            :method :post}
           http-client/request
           )))
@@ -49,7 +50,6 @@
        [:div.my-2.d-flex.align-items-center.justify-content-center  
         [:form.sign-in
          {:on-submit (fn [e]
-                       (info "foo")
                        (.preventDefault e)
                        (submit-password-sign-in sys (-> @pw-data* :password)))}
          [forms/input-component 
@@ -63,19 +63,32 @@
   [:div.my-4.d-flex.align-items-center.justify-content-center  
    [:div 
     [:a.btn.btn-primary
-     {:href (spy (path :sign-in-user-auth-system-request  
-                       (assoc 
-                         (select-keys sys [:auth_system_id :auth_system_type])
-                         :email @email*)
-                       (merge {} (:query-params @state/routing*))))}
+     {:href (path :sign-in-user-auth-system-request  
+                       (select-keys sys [:auth_system_id :auth_system_type])
+                       (merge {:email-or-login @email-or-login*} (:query-params @state/routing*)))}
      (:auth_system_name sys)]]])
+
+
+(defn legacy-auth-system [sys]
+  [:div.my-4.d-flex.align-items-center.justify-content-center  
+   [:div 
+    [:a.btn.btn-primary
+     {:href (str (:auth_system_url sys)
+                 "?" 
+                 (-> (merge {} (:query-params @state/routing*)) 
+                     stringify-keys query-params/encode))}
+     (:auth_system_name sys)]]])
+
 
 (defn auth-systems []
   [:div.my-5
    (for [sys @data*]
      ^{:key (:auth_system_id sys)} 
-     [auth-system sys]
-     )])
+     [:<>
+      (case (:auth_system_type sys)
+        "legacy" [legacy-auth-system sys]
+        ;"password" [password-auth-system sys]
+        [auth-system sys])])])
 
 (comment [:div [:hr]
       [:<>
@@ -88,8 +101,8 @@
    [hidden-routing-state-component
     :did-change request-auth-systems]
    [:h1.text-center "Sign-in: choose an authentication method"
-    [:<> (when-let [email @email*]
-           [:span " for " [:code email]])]]
+    [:<> (when-let [email-or-login @email-or-login*]
+           [:span " for " [:code email-or-login]])]]
    (cond 
      (nil? @data*)  [:div [:h2 "Wait"]]
      (empty? @data*) [:div.alert.alert-danger 
@@ -97,7 +110,7 @@
                       [:span "There are serveral possible causes:"
                        [:ul
                         [:li "The e-mail address is wrongly typed."]
-                        [:li "This email is not registered with any account or external sign-up authentication system."]
+                        [:li "This email or login is not registered with any account or external sign-up authentication system."]
                         [:li "There is an registered account but it is deactivated."]]]
                       [:span "You can contact your support for help."]]
      :else [:div [auth-systems]])

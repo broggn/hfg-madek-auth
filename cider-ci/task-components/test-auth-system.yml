@@ -5,7 +5,7 @@ ports:
 
 scripts:
 
-  test-auth-system_rug:
+  test-auth-system_run:
     start_when:
       bundled:
         script_key: madek-auth_prepare-ruby
@@ -25,7 +25,7 @@ scripts:
     timeout: 30 seconds
     start_when:
       the service is running:
-        script_key: test-auth-system_rug
+        script_key: test-auth-system_run
         states: [executing]
     body: |
       #!/usr/bin/env bash

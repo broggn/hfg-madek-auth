@@ -33,7 +33,7 @@
 
 (defn navigate? [url]
   (debug 'navigate? url)
-  (when-let [match (spy (reitit/match-by-path routes/router (:path url)))]
+  (when-let [match (reitit/match-by-path routes/router (:path url))]
     (debug {:url url :match match})
     (when (not (or (get-in match [:data :bypass-spa])
                    (get-in match [:data :external])))

@@ -30,10 +30,11 @@
             (str  ":" p))))})
 
 (defn continue [resp-data]
-  (info 'continue resp-data)
-  (navigate! (str  (:external_sing_in_url resp-data)
-                  "?token=" (:token resp-data))  
-             :reload true))
+  (let [prefix (:external_sign_in_url resp-data)
+        token (:token resp-data)
+        url (str prefix "?token=" token)]
+    (debug 'url url)
+    (navigate! url  :reload true)))
 
 (defn request []
   (go (some-> 

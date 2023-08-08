@@ -18,7 +18,7 @@
     ["/info" {:name :info}]
     ["/sign-in" {}
      ["" {:name :sign-in}]
-     ["/:email/auth-systems/" 
+     ["/auth-systems/" 
       ["" {:name :sign-in-user-auth-systems}]
       [":auth_system_type" {}
        ["/:auth_system_id" {}
@@ -58,15 +58,3 @@
        (set! js/window.location url)
        (client-navigation/navigate! url))))
 
-
-(comment
-  (path :sign-in {} {:return-to "/auth/info"})
-  (->> [:sign-in {} {:email "foo@bar.com"} ]
-       spy
-       (apply path)
-       spy
-       (reitit/match-by-path router)
-       spy)
-
-
-  (reitit/match-by-name router :users {:user-id "123"}))

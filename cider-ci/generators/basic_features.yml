@@ -13,7 +13,8 @@
     RSPEC_TEST: "./spec/features/basic_spec.rb[1:2]"
 "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:1]":
   name: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:1]"
-  description: Sign in /out with password Sign in with proper password works
+  description: Sign in /out with password Sign in with proper password works and is
+    audited
   environment_variables:
     RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb:9"
     RSPEC_TEST: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:1]"
@@ -21,7 +22,7 @@
   name: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:2]"
   description: Sign in /out with password Sign in with wrong password fails
   environment_variables:
-    RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb:35"
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb:58"
     RSPEC_TEST: "./spec/features/sign-in_sign-out/passwords/password-basic_spec.rb[1:2]"
 "./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb[1:1]":
   name: "./spec/features/sign-in_sign-out/passwords/password-deactivated_spec.rb[1:1]"

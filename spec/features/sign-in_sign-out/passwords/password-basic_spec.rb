@@ -6,7 +6,7 @@ feature 'Sign in /out with password'  do
     @user = FactoryBot.create :user
   end
 
-  scenario 'Sign in with proper password works' do
+  scenario 'Sign in with proper password works and is audited' do
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
     fill_in 'email', with: @user.email
     click_on 'Continue'
@@ -29,10 +29,34 @@ feature 'Sign in /out with password'  do
     find("form button", text: 'Sign out').click
     expect(current_path).to be== '/'
     expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound
+
+
+    # audits
+
+    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+      SELECT * FROM audited_requests
+      JOIN audited_responses ON audited_requests.txid = audited_responses.txid
+      LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid
+      ORDER BY audited_requests.created_at ASC;
+    SQL
+
+    # sign in
+    expect(audited_records[0].with_indifferent_access[:status]).to be== 200
+    expect(audited_records[0].with_indifferent_access[:method]).to be== 'POST'
+    expect(audited_records[0].with_indifferent_access[:table_name]).to be== 'user_sessions'
+    expect(audited_records[0].with_indifferent_access[:tg_op]).to be== 'INSERT'
+
+    # sign out
+    expect(audited_records[1].with_indifferent_access[:status]).to be== 204
+    expect(audited_records[1].with_indifferent_access[:method]).to be== 'POST'
+    expect(audited_records[1].with_indifferent_access[:table_name]).to be== 'user_sessions'
+    expect(audited_records[1].with_indifferent_access[:tg_op]).to be== 'DELETE'
+
   end
 
 
   scenario 'Sign in with wrong password fails' do
+
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
     fill_in 'email', with: @user.email
     click_on 'Continue'
@@ -45,6 +69,19 @@ feature 'Sign in /out with password'  do
     visit '/auth/info'
     expect{find("code.user-session-data")}.to raise_error 
     expect(UserSession.all()).to be_empty
+
+    # audits
+
+    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+      SELECT * FROM audited_requests
+      JOIN audited_responses ON audited_requests.txid = audited_responses.txid
+      LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid
+      ORDER BY audited_requests.created_at ASC;
+    SQL
+
+    expect(audited_records[0].with_indifferent_access[:status]).to be== 401
+    expect(audited_records[0].with_indifferent_access[:method]).to be== 'POST'
+
   end
 
 end

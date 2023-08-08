@@ -37,13 +37,13 @@
      (let [current-url (location-url)]
        (debug 'current-url current-url)
        ; let event bubble up if it is not for this service
-       (when (spy (same-scheme-host-port? target-url current-url))
+       (when (same-scheme-host-port? target-url current-url)
          ; let event bubble up if the SPA is not meant to handle it
-         (when-let [res (spy (navigate? target-url))]
+         (when-let [res (navigate? target-url)]
            ; at this time we knwo we handle the event
            ; and we stop event from bubbling up
            (when event (.preventDefault event))
-           (if (spy (= (:path target-url) (:path current-url)))
+           (if (= (:path target-url) (:path current-url))
              (.replaceState js/window.history nil "" (str target-url))
              (.pushState js/window.history nil "" (str target-url)))
            (on-navigate target-url res)))))))

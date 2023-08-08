@@ -66,6 +66,28 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     expect(current_path).to be== '/'
     expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound
     
+
+    # audits 
+     
+    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+      SELECT * FROM audited_requests
+      JOIN audited_responses ON audited_requests.txid = audited_responses.txid
+      LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid
+      ORDER BY audited_requests.created_at ASC;
+    SQL
+
+    # request sign in
+    expect(audited_records[0].with_indifferent_access[:status]).to be== 200
+    expect(audited_records[0].with_indifferent_access[:method]).to be== 'POST'
+
+    # do sign in
+    expect(audited_records[1].with_indifferent_access[:status]).to be== 200
+    expect(audited_records[1].with_indifferent_access[:method]).to be== 'POST'
+    expect(audited_records[1].with_indifferent_access[:table_name]).to be== 'user_sessions'
+    expect(audited_records[1].with_indifferent_access[:tg_op]).to be== 'INSERT'
+
+
+
   end
 
   scenario 'Unsucessfull sign-in: the auth-service returns false' do
@@ -81,6 +103,25 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     uri = Addressable::URI.parse(current_url)
     # return-to should be preserved during this process:
     expect(uri.query).to be== 'return-to=%2Fauth%2Finfo'
+
+    # audits 
+     
+    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+      SELECT * FROM audited_requests
+      JOIN audited_responses ON audited_requests.txid = audited_responses.txid
+      LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid
+      ORDER BY audited_requests.created_at ASC;
+    SQL
+
+    # request sign in
+    expect(audited_records[0].with_indifferent_access[:status]).to be== 200
+    expect(audited_records[0].with_indifferent_access[:method]).to be== 'POST'
+
+    # do sign in
+    expect(audited_records[1].with_indifferent_access[:status]).to be== 401 
+    expect(audited_records[1].with_indifferent_access[:method]).to be== 'POST'
+
+
   end
 
   scenario 'Try to sign in with a deactivated account' do

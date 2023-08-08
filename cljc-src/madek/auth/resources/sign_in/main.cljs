@@ -14,12 +14,12 @@
 (defonce data* (ratom {}))
 
 (defn continue []
-  (navigate! (path :sign-in-user-auth-systems  
-                   {:email (get-in @data* [:email])}
-                   (some-> @state/state* :routing 
-                           :query-params (select-keys [:return-to])))))
+  (navigate! (path :sign-in-user-auth-systems  {}
+                   (merge {:email-or-login (get-in @data* [:email-or-login])}
+                          (some-> @state/state* :routing 
+                                  :query-params (select-keys [:return-to]))))))
 
-(defn email-form []
+(defn email-or-login-form []
   [:div.row
    [:div.col-md-3]
    [:div.col-md
@@ -28,13 +28,13 @@
                    (.preventDefault e)
                    (continue))}
      [:div.mb-3
-      [:label.col-form-label {:for :email}  
-       "Provide your " [:b "email address "] " to sign in" ]
+      [:label.col-form-label {:for :email-or-login}  
+       "Provide your " [:b "email address "] " or " [:b "login"] " to sign in" ]
       [:input.form-control 
-       {:id :email
-        :type :email
-        :value (get-in @data* [:email])
-        :on-change #(-> % .-target .-value presence (forms/set-value data* [:email]))}]]
+       {:id :email-or-login
+        :type :text
+        :value (get-in @data* [:email-or-login])
+        :on-change #(-> % .-target .-value presence (forms/set-value data* [:email-or-login]))}]]
      [:div.d-flex.mb-3
       [:div.ms-auto
        [:button.btn.btn-primary {:type :submit} "Continue"]]]]]
@@ -52,7 +52,7 @@
 (defn page []
   [:div
    [:h1.text-center "Sign-in: provide e-mail address"]
- [email-form]
+ [email-or-login-form]
  [page-debug]])
 
 

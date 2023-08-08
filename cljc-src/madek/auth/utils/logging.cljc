@@ -7,11 +7,14 @@
 
 (def LOGGING_CONFIG
   {:min-level [[#{
-                  "madek.auth.resources.sign-in.auth-systems.auth-system.password.*"
+                  ;"madek.auth.*"
                   ;"madek.auth.http.*" 
                   ;"madek.auth.main" 
-                  ;"madek.auth.resources.sign-in.*"
-                  ;"madek.auth.routing.*"
+                  ;"madek.auth.resources.sign-in.auth-systems.auth-system.external.*"
+                  ;"madek.auth.resources.sign-in.auth-systems.auth-system.external.manage"
+                  ;"madek.auth.resources.sign-in.auth-systems.auth-system.external.sign-in"
+                  ;"madek.auth.resources.sign-in.auth-systems.auth-system.password.*"
+                  ;"madek.auth.utils.ring-audits"
                   } :debug]
                [#{
                   #?(:clj "com.zaxxer.hikari.*")

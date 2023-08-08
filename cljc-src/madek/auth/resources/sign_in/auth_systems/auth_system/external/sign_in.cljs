@@ -22,7 +22,6 @@
   (when (< (:status response) 300)
     (let [target-path (or (some-> response :body :request-claims :return-to)
                           "/my")]
-      (info "navigating to" target-path)
       (navigate! target-path :reload true))))
 
 (defn sign-in []

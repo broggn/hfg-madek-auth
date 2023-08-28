@@ -1,12 +1,12 @@
 (ns madek.auth.html.user
   (:require
-    ["react-bootstrap" :as bs]
-    [cljs.core.async :refer [go go-loop]]
+    [cljs.core.async :refer [go go-loop <!]]
     [cuerdas.core :as str]
     [madek.auth.html.icons :as icons]
     [madek.auth.http.client.core :as http-client]
     [madek.auth.routes :refer [path navigate!]]
     [madek.auth.utils.core :refer [presence]]
+    [madek.auth.localization :refer [translate]]
     [reagent.core :as reagent :refer [reaction]]
     [taoensso.timbre :refer [debug info warn error spy]]
     [madek.auth.state :refer [user*]]))
@@ -36,17 +36,24 @@
         (#(navigate! "/" :reload true)))))
 
 (defn navbar-part-user []
-  [:<> 
+  [:<>
    (when-let [user @user*]
-     [:> bs/NavDropdown {:title @name-or-some-identifier*}
-      [:> bs/NavDropdown.Item {:href "/my"}
-       "My archive"]
-      [:> bs/NavDropdown.Item {:href (path :info)}
-       "Session information"] 
-      [:> bs/NavDropdown.Item
-       [:form.form.d-flex
-        {:on-submit #(.preventDefault %)}
-        [:button.btn.btn-warning.btn-sm.flex-fill
-         {:type :submit
-          :on-click sign-out}
-         [:span [icons/sign-out] " " "Sign out"]]]]])])
+     [:div.menu
+      [:button.menu__toggle-button
+       @name-or-some-identifier*
+       [icons/down]]
+      (when true
+        [:ul.menu__flyout {:role :menu}
+         [:li
+          [:a {:href "/my"} (translate :user-menu-my-archive)]]
+
+         [:li
+          [:a {:href (path :info)} (translate :user-menu-info)]]
+
+         [:li
+          [:form
+           {:on-submit #(.preventDefault %)}
+           [:button.link-button.bold
+            {:type :submit
+             :on-click sign-out}
+            (translate :user-menu-sign-out)]]]])])])

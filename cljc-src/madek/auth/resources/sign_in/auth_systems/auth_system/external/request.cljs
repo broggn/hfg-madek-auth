@@ -10,6 +10,7 @@
     [madek.auth.routes :refer [navigate! path]]
     [madek.auth.state :as state :refer [debug?* hidden-routing-state-component]]
     [madek.auth.utils.core :refer [presence]]
+    [madek.auth.localization :refer [translate]]
     [reagent.core :as reagent :refer [reaction] :rename {atom ratom}]
     [taoensso.timbre :refer [debug error info spy warn]]))
 

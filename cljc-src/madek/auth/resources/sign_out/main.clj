@@ -11,6 +11,9 @@
             (sql/where [:= :id session-id])
             (sql-format)
             (#(jdbc/execute-one! tx % {:return-keys true})))
-      {:status 204}
+      (if (= :html (-> request :accept :mime))
+        {:status 302
+         :headers {"Location" "/"}}
+        {:status 204})
       (throw (ex-info "Session was not deleted" {})))
     {:status 401}))

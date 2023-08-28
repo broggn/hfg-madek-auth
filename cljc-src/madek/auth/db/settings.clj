@@ -12,6 +12,8 @@
 
 (def selected-columns 
   [:brand_logo_url
+   :brand_texts
+   :site_titles
    :default_locale
    :available_locales
    :sitemap])

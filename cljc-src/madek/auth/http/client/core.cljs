@@ -3,7 +3,7 @@
   (:require
     [cljs-http.client :as http-client]
     [cljs-uuid-utils.core :as uuid]
-    [cljs.core.async :refer [go go-loop]]
+    [cljs.core.async :refer [>! <! go go-loop]]
     [cljs.core.async :as async :refer [timeout]]
     [clojure.pprint :refer [pprint]]
     [clojure.string :as str]
@@ -31,7 +31,9 @@
       (update :id #(uuid/uuid-string (uuid/make-random-uuid)))
       (update :method #(or % :get))
       (update :timestamp #(js/Date.))
-      (update :url (fn [url] (or url (-> @state/routing* :route))))
+      (update :url (fn [url] 
+                     (or url
+                         (let [{:keys [path query]} @state/routing*] (str path (when query "?") query)))))
       (update-in [:headers "accept"]
                  #(or % "application/json"))
       (update-in [:headers ANTI_CRSF_TOKEN_COOKIE_NAME]

@@ -1,0 +1,94 @@
+body {
+  margin: 0;
+  height: 100%;
+}
+
+.full-height-container {
+  min-height: 100vh; 
+  display: flex;
+  flex-direction: column;
+}
+
+.container-inverted {
+  background-color: #666666;
+  background-image: linear-gradient(#666, #4c4c4c);
+  background-size: 100%;
+  text-shadow: 0px 1px 1px rgba(0,0,0,0.25);
+  color: #f3f3f3;
+  
+  a {
+    color: #7a9d29;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+  box-shadow: inset 0 -1px 3px rgba(0,0,0,0.25);
+  padding: 11px;
+  padding-left: 0;
+  border-top: 1px solid rgba(0,0,0,0.01);
+  color: #f3f3f3;
+  font-size: 13px;
+
+  a {
+    color: inherit !important;
+  }
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  width: 90%; // orig: 35%
+  line-height: 1.2;
+  height: 32px;
+
+  &__logo {
+    display: inline-block;
+    width: 65px;
+    margin-left: 10px;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: auto 32px;
+    background-image: url(data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2075%2032%22%3E%3Cpath%20d%3D%22M15.3%2031.3h7.1v.7h-7.1zm0-4.9h7.1v.7h-7.1zm0-26.4h7.1v.7h-7.1zm6.5%2017.7L29.6%209V5.2H15.5v4.2h7.3L15%2017.9V22h15v-4.3z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E)
+  }
+
+  &__text {
+  }
+}
+
+.header-brand-text {
+  display: flex;
+  &__brand-name {
+    &:before {
+      content: " | ";
+      padding-left: 3px;
+    }
+  }
+}
+
+.footer {
+  margin-top: auto;
+  height: 50px; // (vs. 75px in webapp)
+
+  text-align: center;
+  padding: 15px 20px 10px 20px;
+}
+
+@media only screen and (min-width: 1152px) {
+  footer {
+    height: 50px;
+  }
+}
+
+.main {
+  padding: 40px 20px;
+}
+
+.loading-screen {
+  margin: 50px auto;
+  text-align: center;
+}

@@ -1,1 +1,12 @@
-@import "bootstrap/scss/bootstrap";
+@import "basics";
+@import "fonts";
+
+@import "layout";
+@import "menu";
+
+@import "forms";
+@import "buttons";
+@import "card-page";
+@import "modal";
+
+@import "utilities";

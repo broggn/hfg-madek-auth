@@ -98,9 +98,9 @@
       (wrap-json-body {:keywords? true})
       settings/wrap
       db/wrap-tx
+      anti-csrf/wrap
       wrap-keyword-params
       wrap-params
-      anti-csrf/wrap
       ring.middleware.cookies/wrap-cookies
       (static-resources/wrap
         "" {:allow-symlinks? true

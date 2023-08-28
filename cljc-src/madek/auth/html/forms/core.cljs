@@ -83,7 +83,7 @@
    (when hint [:p [:small hint]]) ])
 
 (defn input-component
-  [data* ks & {:keys [label hint classes type element placeholder 
+  [data* ks & {:keys [label hint classes type element placeholder auto-focus?
                       disabled rows on-change post-change
                       prepend append reset-default]
                :or {label (last ks)
@@ -99,16 +99,13 @@
                     append nil
                     reset-default nil}}]
   [:div {:class classes}
-   [:label {:for (last ks)}
-    (if (= label (last ks))
-      [:strong label]
-      [:span [:strong  label] [:small " ("
-                               [:span.text-monospace (last ks)] ")"]])]
+   [:label.form-label {:for (last ks)}
+    label]
    [:div.input-group
     (when prepend [prepend])
     [element
      {:id (last ks)
-      :class :form-control
+      :class "text-input"
       :placeholder placeholder
       :type type
       :value (get-in @data* ks)
@@ -118,7 +115,8 @@
       :tab-index TAB-INDEX
       :disabled disabled
       :rows rows
-      :auto-complete :off}]
+      :auto-complete :off
+      :auto-focus auto-focus?}]
     (when append [append])
     (when reset-default
       [:div.input-group-append.reset

@@ -15,11 +15,10 @@ feature 'Sesssion expiration'  do
 
 
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
-    fill_in 'email', with: @user.email
-    click_on 'Continue'
-    click_on 'Madek Password Authentication'
+    fill_in 'email-or-login', with: @user.email
+    click_on 'Weiter'
     fill_in :password, with: @user.password
-    click_on 'Submit'
+    click_on 'Anmelden'
     # we are on the supplied return-to path:
     uri = Addressable::URI.parse(current_url)
     expect(uri.path).to be== '/auth/info'

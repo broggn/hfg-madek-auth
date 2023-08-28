@@ -41,8 +41,8 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
 
   scenario 'Successfull sign-in' do
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
-    fill_in 'email', with: @user.email
-    click_on 'Continue'
+    fill_in 'email-or-login', with: @user.email
+    click_on 'Weiter'
     click_on ext_auth_name
     click_on "Yes"
     # redirecting and full reload takes some time; somewhat dirty but more easy
@@ -62,7 +62,7 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     expect{UserSession.find(user_session_id)}.not_to raise_error
 
     click_on @user.person.last_name
-    find("form button", text: 'Sign out').click
+    find("form button", text: 'Abmelden').click
     expect(current_path).to be== '/'
     expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound
     
@@ -92,8 +92,8 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
 
   scenario 'Unsucessfull sign-in: the auth-service returns false' do
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
-    fill_in 'email', with: @user.email
-    click_on 'Continue'
+    fill_in 'email-or-login', with: @user.email
+    click_on 'Weiter'
     click_on ext_auth_name
     click_on "No"
     expect(page).to have_content "Authentication failed"
@@ -127,9 +127,9 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
   scenario 'Try to sign in with a deactivated account' do
     @user.update! is_deactivated: true
     visit '/auth/sign-in'
-    fill_in 'email', with: @user.email
-    click_on 'Continue'
-    expect(page).to have_content "There is an registered account but it is deactivated."
+    fill_in 'email-or-login', with: @user.email
+    click_on 'Weiter'
+    expect(page).to have_content "Einloggen nicht möglich mit diesem Benutzernamen"
   end
 
 end

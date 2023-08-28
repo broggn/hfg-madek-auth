@@ -5,8 +5,4 @@ cd $PROJECT_DIR
 
 ${PROJECT_DIR}/bin/env/nodejs-setup
 
-./bin/npx node-sass --recursive \
-    --output-style compressed --source-map false --precision 6 \
-    --output resources/auth/public/css \
-    --include-path node_modules \
-    css-src
+npm run css-build

@@ -29,6 +29,10 @@
     (->> @requests*
          (map second)
          (sort-by :timestamp)
+         (filter (fn [req] 
+                   (if-let [f (:modal-filter req)]
+                     (f req)
+                     true)))
          (filter (fn [req]
                    (case (status req)
                      :pending (:modal-on-request req)
@@ -47,7 +51,7 @@
   ([request]
    (dismiss-button-component request {}))
   ([request opts]
-   [:button.btn
+   [:button
     {:class (str "btn-" (-> request status bootstrap-status)
                  " " (:class opts))
      :on-click #(dismiss (:id request))}
@@ -73,8 +77,7 @@
       (when-let [body (some-> request :response :body presence)]
         [:div
          [:p "The response message reads:"]
-         [modal-body-inner body]
-         [:hr]])
+         [modal-body-inner body]])
       [:small
        (if (HTTP_UNSAFE_METHODS (:method request))
          [:p "Please try to send the data again. If that fails use reload button of your browser and send again. "]

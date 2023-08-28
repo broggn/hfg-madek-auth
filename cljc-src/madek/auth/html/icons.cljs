@@ -12,7 +12,7 @@
 ;      fa-free-solid-svg-icons/faSync)
 
 
-(defn back [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faCircleLeft :className ""}))
+(defn back [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faArrowLeftLong :className ""}))
 
 (defn add [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faPlusSquare :className ""}))
 (def create add)
@@ -22,7 +22,7 @@
 (def inspector inspectors)
 (defn cancel [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faTimes :className ""}))
 (defn delete [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faTrashAlt :className ""}))
-(defn down [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faCaretSquareDown :className ""}))
+(defn down [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faCaretDown :className ""}))
 (defn download [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faDownload :className ""}))
 (defn edit [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faPen :className ""}))
 (defn github [] (FontAwesomeIcon #js{:icon fa-free-brands-svg-icons/faGithubSquare :className ""}))

@@ -37,15 +37,16 @@
            (head)
            [:body {:data-user (-> user json/to-json url/encode)
                    :data-settings (-> settings json/to-json url/encode)}
-            [:div#app
-             [:div.container
+            [:div#app {:class "full-height-container"}
+             [:div.loading-screen
               [:h1 "Madek Authentication Service"]
               [:p "Loading application ..."]]]]
            js-includes)})
 
 (defn dispatch [root-handler request]
   (if (and (-> request :route :data :bypass-spa not)
-           (= :html (-> request :accept :mime)))
+           (= :html (-> request :accept :mime))
+           (not= :post (-> request :request-method)))
     (html-handler request)
     (root-handler request)))
 

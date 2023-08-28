@@ -1,14 +1,15 @@
 (ns madek.auth.utils.url
   (:require
     #?(:clj [ring.util.codec])
+    #?(:cljs [goog.string :refer [urlDecode urlEncode]])
     ))
 
 (def decode
-  #?(:cljs js/decodeURIComponent
+  #?(:cljs urlDecode
      :clj ring.util.codec/url-decode))
 
 (def encode
-  #?(:cljs js/encodeURIComponent
+  #?(:cljs urlEncode
      :clj ring.util.codec/url-encode))
 
 

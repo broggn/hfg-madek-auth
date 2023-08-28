@@ -20,7 +20,7 @@
 
 (defn x-csrf-token! [request]
   (or (some-> request (get-in [:headers ANTI_CRSF_TOKEN_COOKIE_NAME]) presence)
-      (some-> request :form-params :csrf-token presence)
+      (some-> request :form-params (get "csrf-token") presence)
       (throw (ex-info "The x-csrf-token has not been sent!" {:status 403}))))
 
 (defn anti-csrf-token [request]

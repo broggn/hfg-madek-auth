@@ -8,11 +8,10 @@ feature 'Sign in /out with password'  do
 
   scenario 'Sign in with proper password works and is audited' do
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
-    fill_in 'email', with: @user.email
-    click_on 'Continue'
-    click_on 'Madek Password Authentication'
+    fill_in 'email-or-login', with: @user.email
+    click_on 'Weiter'
     fill_in :password, with: @user.password
-    click_on 'Submit'
+    click_on 'Anmelden'
     uri = Addressable::URI.parse(current_url)
     # we are on the supplied return-to path:
     expect(uri.path).to be== '/auth/info'
@@ -26,7 +25,7 @@ feature 'Sign in /out with password'  do
     expect{UserSession.find(user_session_id)}.not_to raise_error
 
     click_on @user.person.last_name
-    find("form button", text: 'Sign out').click
+    find("form button", text: 'Abmelden').click
     expect(current_path).to be== '/'
     expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound
 
@@ -58,14 +57,12 @@ feature 'Sign in /out with password'  do
   scenario 'Sign in with wrong password fails' do
 
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
-    fill_in 'email', with: @user.email
-    click_on 'Continue'
-    click_on 'Madek Password Authentication'
+    fill_in 'email-or-login', with: @user.email
+    click_on 'Weiter'
     fill_in :password, with: "foo"
-    click_on 'Submit'
+    click_on 'Anmelden'
     ActiveRecord::Base.connection 
-    expect(page).to have_content "Request ERROR 401"
-    expect(page).to have_content "Password missmatch"
+    expect(page).to have_content "Falscher Benutzername/Passwort"
     visit '/auth/info'
     expect{find("code.user-session-data")}.to raise_error 
     expect(UserSession.all()).to be_empty

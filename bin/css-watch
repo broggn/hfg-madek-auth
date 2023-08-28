@@ -5,8 +5,4 @@ cd $PROJECT_DIR
 
 ${PROJECT_DIR}/bin/env/nodejs-setup
 
-./bin/npx node-sass --watch --recursive \
-    --output-style nested --source-map true --source-map-contents true --precision 6 \
-    --output resources/auth/public/css \
-    --include-path node_modules \
-    css-src
+npm run css-watch

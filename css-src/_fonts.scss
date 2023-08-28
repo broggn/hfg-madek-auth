@@ -1,0 +1,14 @@
+@import "@fontsource/open-sans/scss/mixins";
+
+@include faces(
+  $subsets: (
+    latin,
+  ),
+  $weights: (
+    400,
+    600,
+    700
+  ),
+  $styles: all,
+  $directory: '@fontsource/open-sans/files'
+);

@@ -1,0 +1,43 @@
+// Basic element styling
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  -webkit-font-smoothing: subpixel-antialiased;
+  font-size: 14px;
+  background: #f1f1f1 url(body-background.png);
+}
+
+h1, h2, h3, h4, h5 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+a, a:hover, a:active {
+  color: #666666;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover {
+  color: #4c4c4c;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.debug {
+  padding: 20px;
+}

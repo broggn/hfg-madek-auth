@@ -3,27 +3,32 @@
     ["react-bootstrap" :as bs]
     [madek.auth.routes :refer [path]]
     [madek.auth.state :as state]
+    [madek.auth.localization :refer [localized-setting]]
     [taoensso.timbre :refer [debug info warn error spy]]
     [madek.auth.html.user :as user]
     ))
 
 
 (defn header []
-  [:> bs/Navbar {:bg :light}
-   [:> bs/Container {:class "justify-content-start"}
-    [:> bs/Navbar.Brand {:href (path :auth)} "Madek Auth"]]
-   [:> bs/Container {:class "justify-content-center"}
-    ;[:> bs/Nav.Item [:> bs/Nav.Link {:href (path :sign-in)} [:div] " Sign-in"]]
-    ]
-   [:> bs/Container {:class "justify-content-end"}
-    [user/navbar-part-user]]])
+  (let [brand-logo-url (some-> @state/settings* :brand_logo_url
+                               (#(str "url(" % ")")))]
+    [:header.header.container-inverted
+     [:a.header-brand {:href "/"}
+      [:span.header-brand__logo {:style (merge {} (when brand-logo-url {:background-image brand-logo-url}))}]
+      [:div.header-brand__text.header-brand-text
+       [:h1.header-brand-text__instance-name (localized-setting :site_titles)]
+       [:h2.header-brand-text__brand-name (localized-setting :brand_texts)]]]
+     [:div [user/navbar-part-user]]]))
 
 
 (defn footer []
-  [:> bs/Navbar {:bg :light}
-   [:> bs/Navbar.Collapse {:class_name "justify-content-end"}]
-   [:> bs/Form {:inline "true" :class "px-2"}
-    [:> bs/Form.Group {:control-id "debug"}
-     [:> bs/Form.Check {:type "checkbox" :label "Debug"
-                        :checked @state/debug?*
-                        :on-change #(swap! state/debug?* (fn [b] (not b)))}]]]])
+  [:footer.footer.container-inverted
+   [:div {:class "ui-footer-copy"}
+    [:a {:href "/release"} "Madek"]
+    " — "
+    (localized-setting :brand_texts)
+    [:label {:style {:display "none"}}
+     [:input {:type "checkbox" :label "Debug"
+              :checked @state/debug?*
+              :on-change #(swap! state/debug?* (fn [b] (not b)))}]
+     "Debug"]]])

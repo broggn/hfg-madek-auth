@@ -2,24 +2,53 @@
   (:require
     [madek.auth.utils.json :as json]
     [lambdaisland.uri :as uri]
-    [cljs.core.async :refer [go go-loop]]
+    [cljs.core.async :refer [<! go go-loop]]
     [cljs.pprint :refer [pprint]]
     [madek.auth.html.forms.core :as forms]
-    [madek.auth.html.icons :as icons]
+    [madek.auth.html.components :refer [change-username-button]]
     [madek.auth.http.client.core :as http-client]
     [madek.auth.routes :refer [navigate! path]]
     [madek.auth.state :as state :refer [debug?* hidden-routing-state-component]]
     [madek.auth.utils.core :refer [presence]]
+    [madek.auth.localization :refer [translate]]
     [reagent.core :as reagent :refer [reaction] :rename {atom ratom}]
     [taoensso.timbre :refer [debug error info spy warn]]))
 
 
+(def auth-system* (ratom nil))
 (def data* (ratom {}))
+(def validation-message* (ratom nil))
 
 (defn continue [resp-data]
-  (if-let [return-to (get-in  @state/routing* [:query-params :return-to])]
+  (if-let [return-to (not-empty (get-in  @state/routing* [:query-params :return-to]))]
     (navigate! return-to :reload true)
     (navigate! "/my" :reload true)))
+
+(defn request-auth-system [& _]
+  (reset! auth-system* nil)
+  (go (some->>
+       {} http-client/request :chan <!
+       http-client/filter-success :body
+       (reset! auth-system*))))
+
+(defn password-mismatch? [req]
+  (-> req :response :body :message (= "Password missmatch")))
+
+(def password-mismatch?*
+  (reaction
+   (->> @http-client/requests*
+        (map second)
+        (sort-by :timestamp)
+        (filter password-mismatch?)
+        first)))
+
+(def waiting?*
+  (reaction
+   (->> @http-client/requests*
+        (map second)
+        (sort-by :timestamp)
+        last
+        (#(and % (-> % :response not))))))
 
 (defn submit-sign-in []
   (go (some-> 
@@ -27,7 +56,8 @@
                     (:path-params @state/routing*)
                     (:query-params @state/routing*))
          :method :post
-         :modal-on-request true
+         :modal-on-request false
+         :modal-filter #(-> % password-mismatch? not)
          :json-params @data*}
         http-client/request :chan <!
         http-client/filter-success :body
@@ -43,30 +73,50 @@
             (with-out-str (pprint @data*))]]])])
 
 (defn form []
-  [:div.my-4.d-flex.align-items-center.justify-content-center
-   [:form
-    {:on-submit (fn [e]
-                  (.preventDefault e)
-                  (submit-sign-in))}
-    [:div.mb-3
-     (let [email-or-login-data* (reaction {:email-or-login (get-in @state/routing* 
-                                                 [:query-params :email-or-login])})]
-       [forms/input-component email-or-login-data* [:email-or-login]
-        :disabled true])]
-    [:div
-     [forms/input-component data* [:password]
-      :type :password]]
-    [:div.d-grid
-     [:button.btn.btn-primary 
-      {:type :submit
-       :disabled (-> @data* :password presence not)}
-      "Submit" ]]]])
+  (let [email-or-login (get-in @state/routing* [:query-params :email-or-login])
+        validation-message @validation-message*
+        password-mismatch? @password-mismatch?*]
+    [:form
+     {:on-submit (fn [e]
+                   (.preventDefault e)
+                   (reset! validation-message* nil)
+                   (if (-> @data* :password presence)
+                     (submit-sign-in)
+                     (reset! validation-message* (translate :step3-message-password-required))))}
+     (if validation-message
+       [:div.form-row.validation-message validation-message]
+       ; else
+       (when password-mismatch?
+         [:div.form-row.validation-message (translate :step3-message-login-failed)]))
+
+     [:div.form-row
+      [:div.bold.mb-2 (translate :step2-username-label)]
+      [:div email-or-login]]
+
+     [:div
+      [forms/input-component data* [:password]
+       :type :password :classes "form-row" :label (translate :step3-password-label) :auto-focus? true]]
+
+     [:div.form-row
+      [:button.primary-button
+       {:type :submit}
+       (translate :step3-submit-label)
+       (when @waiting?* "...")]]
+     [:div
+      [change-username-button
+       {:href (path :sign-in {} (some-> @state/state* :routing
+                                        :query-params (select-keys [:return-to :lang])))}
+       (translate :step3-change-username-label)]]]))
 
 (defn page []
-  [:div.page
-   ;[hidden-routing-state-component :did-change request]
-   [:h1.text-center "Madek Password Authentication"]
-   [form]
+  [:div.card-page
+   [hidden-routing-state-component
+    :did-change request-auth-system]
+   [:div.card-page__head [:h1 (translate :login-box-title)]]
+   [:div.card-page__body {:style {:min-height "20em"}}
+    [:<>
+     [:h2.form-row (-> @auth-system* :auth_system_name (or "\u00A0"))]
+     [form]]]
    [page-debug]])
 
 (def components 

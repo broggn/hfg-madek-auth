@@ -46,6 +46,6 @@
 
 
 (defn button [text]
-  [:button.btn.btn-outline-secondary.btn-sm.py-0.px-1
+  [:button
    {:on-click #(copy-text text)}
    [:span [:i.fas.fa-clipboard] " Copy to clipboard"]])

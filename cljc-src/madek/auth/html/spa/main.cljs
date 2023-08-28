@@ -13,15 +13,16 @@
    ])
 
 (defn html []
-  [:div.container
-   [http-client-modal/modal-component]
-   [header]
-   [:div.mt-3
-    (if-let [page (:page @state/routing*)]
-      [:<>
-       [page]]
-      [not-found-page])]
-   [state/debug-ui-component]
+  [:<>
+   [:div
+    [header]
+    [http-client-modal/modal-component]
+    [:div.main
+     (if-let [page (:page @state/routing*)]
+       [:<>
+        [page]]
+       [not-found-page])]
+    [state/debug-ui-component]]
    [footer]])
 
 (defn mount []

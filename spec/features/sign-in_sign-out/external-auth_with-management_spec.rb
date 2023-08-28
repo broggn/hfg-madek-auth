@@ -73,9 +73,9 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
   scenario 'Create account and sign-in ' do
 
     visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
-    fill_in 'email', with: @email
-    click_on 'Continue'
-    click_on ext_auth_name
+    fill_in 'email-or-login', with: @email
+    click_on 'Weiter'
+    # click_on ext_auth_name # -> app does redirect automatically
 
     within('div', text: 'Authentication with User-Management Properties') do
       click_on "I am"
@@ -100,7 +100,7 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
     expect{UserSession.find(user_session_id)}.not_to raise_error
 
     click_on @user.person.last_name
-    find("form button", text: 'Sign out').click
+    find("form button", text: 'Abmelden').click
     expect(current_path).to be== '/'
     expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound
     
@@ -125,9 +125,9 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
     scenario 'it works' do
 
       visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
-      fill_in 'email', with: @email
-      click_on 'Continue'
-      click_on ext_auth_name
+      fill_in 'email-or-login', with: @email
+      click_on 'Weiter'
+      # click_on ext_auth_name # -> app does redirect automatically
 
       within('div', text: 'Authentication with User-Management Properties') do
         click_on "I am"
@@ -151,9 +151,9 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
 
     scenario 'it updates groups, adds and removes user from apropiate groups' do
       visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
-      fill_in 'email', with: @email
-      click_on 'Continue'
-      click_on ext_auth_name
+      fill_in 'email-or-login', with: @email
+      click_on 'Weiter'
+      # click_on ext_auth_name # -> app does redirect automatically
 
       within('div', text: 'Authentication with User-Management Properties') do
         click_on "I am"

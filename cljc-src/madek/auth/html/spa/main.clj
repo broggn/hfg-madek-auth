@@ -28,14 +28,15 @@
        (map hiccup.page/include-js)))
 
 
-(defn html-handler [{user :authenticated-entity :as request}]
+(defn html-handler [{user :authenticated-entity 
+                     settings :settings 
+                     :as request}]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body (html5
            (head)
            [:body {:data-user (-> user json/to-json url/encode)
-                   ;:data-server-state (-> @state* json/to-json url/dencode)
-                   }
+                   :data-settings (-> settings json/to-json url/encode)}
             [:div#app
              [:div.container
               [:h1 "Madek Authentication Service"]

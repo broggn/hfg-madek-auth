@@ -15,14 +15,16 @@
 
 (def server* (reagent/atom {}))
 
-(def user* (reagent/atom nil))
+(def settings* (reagent/atom nil))
 
+(def user* (reagent/atom nil))
 
 (def state* (reagent/reaction
               {:debug @debug?*
                :routing @routing*
                :server @server*
-               :user @user* }))
+               :settings @settings*
+               :user @user*}))
 
 (defn hidden-routing-state-component
   [& {:keys [did-mount did-change did-update will-unmount]
@@ -78,4 +80,5 @@
   (info "initializing state ...")
   (swap! server* merge (dom/data-attribute "body" "server-state"))
   (swap! user* merge (dom/data-attribute "body" "user"))
+  (swap! settings* merge (dom/data-attribute "body" "settings"))
   (info "initialized state"))

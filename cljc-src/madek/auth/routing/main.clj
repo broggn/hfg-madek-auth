@@ -4,6 +4,7 @@
     [logbug.debug :as debug :refer [I> debug-ns]]
     [logbug.ring :refer [wrap-handler-with-logging]]
     [madek.auth.db.core :as db]
+    [madek.auth.db.settings :as settings]
     [madek.auth.html.spa.main :as spa]
     [madek.auth.http.anti-csrf.main :as anti-csrf]
     [madek.auth.http.session :as session]
@@ -95,6 +96,7 @@
       spa/wrap
       session/wrap
       (wrap-json-body {:keywords? true})
+      settings/wrap
       db/wrap-tx
       wrap-keyword-params
       wrap-params

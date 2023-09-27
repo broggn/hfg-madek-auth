@@ -2,6 +2,7 @@
   (:require
     [cljs.core.async :refer [go go-loop]]
     [cljs.pprint :refer [pprint]]
+    [clojure.set :refer [rename-keys]]
     [clojure.walk :refer [stringify-keys]]
     [madek.auth.html.forms.core :as forms]
     [madek.auth.html.icons :as icons]
@@ -40,8 +41,7 @@
                       {:auth_system_id (:auth_system_id sys)} 
                       (merge {:email-or-login @email-or-login*} (:query-params @state/routing*)))
            :method :post}
-          http-client/request
-          )))
+          http-client/request)))
 
 (defn password-auth-system [sys]
   (let [pw-data* (ratom {})]
@@ -75,7 +75,9 @@
     [:a.btn.btn-primary
      {:href (str (:auth_system_url sys)
                  "?" 
-                 (-> (merge {} (:query-params @state/routing*)) 
+                 (-> (merge {:return_to "/my"} 
+                            (rename-keys (:query-params @state/routing*) 
+                                         {:return-to :return_to})) 
                      stringify-keys query-params/encode))}
      (:auth_system_name sys)]]])
 

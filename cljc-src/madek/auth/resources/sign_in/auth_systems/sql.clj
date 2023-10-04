@@ -19,8 +19,12 @@
 (defn user-cond [email-or-login]
   [:and [:<> :users.is_deactivated true]
    [:or 
-    [:= [:lower :users.email] [:lower email-or-login]]
-    [:= [:lower :users.login] [:lower email-or-login]]]])
+    [:and
+     [:<> nil :users.email]
+     [:= [:lower :users.email] [:lower email-or-login]]]
+    [:and
+     [:<> nil :users.login]
+     [:= [:lower :users.login] [:lower email-or-login]]]]])
 
 
 (defn users-matches-and-connected-cond [email-or-login]

@@ -15,6 +15,8 @@
                   ;"madek.auth.resources.sign-in.auth-systems.auth-system.external.sign-in"
                   ;"madek.auth.resources.sign-in.auth-systems.auth-system.password.*"
                   ;"madek.auth.utils.ring-audits"
+                  "madek.auth.resources.sign-in.auth-systems.auth-system.password.sign-in"
+                  "madek.auth.resources.sign-in.auth-systems.sql"
                   } :debug]
                [#{
                   #?(:clj "com.zaxxer.hikari.*")

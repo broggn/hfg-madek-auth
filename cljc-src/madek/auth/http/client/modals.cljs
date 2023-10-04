@@ -71,7 +71,7 @@
          (some-> request :method str string/upper-case) " "
          (some-> request :url str) " "]]]
    (when-not (some-> request :response presence)
-     [wait-component request] )
+     [wait-component request])
    (when (>= (-> request :response :status) 400)
      [:<>
       (when-let [body (some-> request :response :body presence)]
@@ -85,7 +85,8 @@
        [:p [:span
             "Contact your administrator or file a bug report if this problem persists. "
             "Please provide the details for this request: "
-            [clipboard/button (with-out-str (pprint request))]]]]])])
+            [clipboard/button (with-out-str (pprint request))]]]]])
+   (pr-str request)])
 
 (defn modal-component []
   (when-let [request @current-modal-request*]

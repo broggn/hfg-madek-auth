@@ -8,7 +8,7 @@ feature 'Sign in with deactivated account'  do
 
   def deactivate_user
     ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc
-      UPDATE users SET is_deactivated = true
+      UPDATE users SET active_until = current_date - interval '1 day'
       WHERE users.id = '#{@user.id}'
     SQL
   end

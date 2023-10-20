@@ -17,7 +17,8 @@
 
 
 (defn user-cond [email-or-login]
-  [:and [:<> :users.is_deactivated true]
+  [:and
+   [:raw "now() <= users.active_until"]
    [:or 
     [:= [:lower :users.email] [:lower email-or-login]]
     [:= :users.login [:lower email-or-login]]]])
@@ -50,8 +51,7 @@
       (sql/where (users-matches-and-connected-cond email-or-login))))
 
 (defn auth-systems-query [email-or-login]
-  (-> (sql/from :auth_systems)
-      (sql/select 
+  (-> (sql/select 
         [:auth_systems.external_sign_in_url :auth_system_url]
         [:auth_systems.id :auth_system_id] 
         [:auth_systems.name :auth_system_name]
@@ -59,13 +59,14 @@
         [:users.id :user_id]
         [:users.email :email] 
         [:users.login :login])
+      (sql/from :auth_systems)
+      (sql/left-join 
+        :users (users-matches-and-connected-cond email-or-login))
       (sql/where [:= :auth_systems.enabled true])
       (sql/where [:or 
                   (auth-systems-match-cond email-or-login)
                   [:exists (-> email-or-login users-matches-and-connected
                                (sql/select true))]])
-      (sql/left-join 
-        :users (users-matches-and-connected-cond email-or-login))
       (sql/order-by [:priority :desc])))
 
 

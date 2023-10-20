@@ -125,7 +125,7 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
   end
 
   scenario 'Try to sign in with a deactivated account' do
-    @user.update! is_deactivated: true
+    @user.update! active_until: Date.yesterday
     visit '/auth/sign-in'
     fill_in 'email-or-login', with: @user.email
     click_on 'Weiter'

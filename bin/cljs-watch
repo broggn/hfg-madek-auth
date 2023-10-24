@@ -10,4 +10,5 @@ ${PROJECT_DIR}/bin/env/nodejs-setup
 
 rm -rf resources/madek-auth/public/js/
 ./bin/npm i
+./bin/css-compile
 ./bin/npx shadow-cljs watch madek-auth

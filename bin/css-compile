@@ -5,4 +5,4 @@ cd $PROJECT_DIR
 
 ${PROJECT_DIR}/bin/env/nodejs-setup
 
-npm run css-build
+./bin/npm run css-build

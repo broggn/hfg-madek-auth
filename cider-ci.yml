@@ -90,3 +90,45 @@ jobs:
       include: 
         - cider-ci/context-components/extauth-features.yml
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# META JOBS (only depend on other jobs)                                           #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+  all-tests:
+    name: "All tests"
+    description: |
+      This job depends on all unit jobs that need to pass.
+      It is depended upon by the super-project!
+      *Note that there still be more requirements for actually pushing to `origin`,
+      look in job **"Good to Merge"**!*
+    priority: 999 # "empty" job = high priority
+    context:
+      task: "echo '✔︎ All dependencies have passed' ; exit 0"
+    depends_on: &ALL_TEST_DEPENDS
+      build: {job_key: build, type: job, states: [passed]}
+      lint: {job_key: lint, type: job, states: [passed]}
+      check-feature-tasks: {job_key: check-feature-tasks, type: job, states: [passed]}
+      specs-preflight-check: {job_key: specs-preflight-check, type: job, states: [passed]}
+      basic-features: {job_key: basic-features, type: job, states: [passed]}
+      extauth-features: {job_key: extauth-features, type: job, states: [passed]}
+      all-tests of the datalayer: {job_key: all-tests, type: job, submodule: [datalayer], states: [passed]}
+    run_when: *ALL_TEST_DEPENDS
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# GITHUB BRANCH PROTECTION                                                        #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+  good-to-merge:
+    name: "⚑ Good To Merge"
+    description: |
+      This job depends on all jobs that need to pass for "Delivery".
+      It is depended upon by GitHub's branch protection (for `master`)!
+    priority: 999 # "delivery" job = high priority
+    context:
+      include:
+        - path: cider-ci/context-components/env.yml
+        - submodule: [datalayer]
+          path: cider-ci/context-components/merge-checks.yml
+    depends_on:
+      all-tests: {job_key: all-tests, type: job, states: [passed]}
+      good to merge of the datalayer: {job_key: good-to-merge, type: job, submodule: [datalayer], states: [passed]}

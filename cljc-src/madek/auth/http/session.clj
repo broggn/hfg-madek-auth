@@ -63,10 +63,8 @@
 (def selects 
   [[:auth_systems.id :auth_system_id]
    [:auth_systems.name :auth_system_name]
-   [:people.first_name :person_first_name]
-   [:people.institutional_id :person_institutional_id]
-   [:people.last_name :person_last_name]
-   [:people.pseudonym :person_pseudonym]
+   [:first_name :user_first_name]
+   [:last_name :user_last_name]
    [:user_sessions.created_at :session_created_at]
    [:user_sessions.id :session_id]
    [:users.email :user_email]
@@ -79,7 +77,6 @@
   (-> (apply sql/select selects)
       (sql/from :user_sessions)
       (sql/join :users [:= :user_sessions.user_id :users.id])
-      (sql/join :people [:= :people.id :users.person_id])
       (sql/join :auth_systems [:= :user_sessions.auth_system_id :auth_systems.id])
       (sql/where [:= :user_sessions.token_hash token-hash])
       (sql/where [:<= [:now] expiration-sql-expr])))

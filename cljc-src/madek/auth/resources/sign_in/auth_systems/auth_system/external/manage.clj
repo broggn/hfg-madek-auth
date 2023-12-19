@@ -28,7 +28,7 @@
       (assoc :subtype "Person")))
 
 (defn user-properties [account auth-system]
-  (-> (select-keys account [:email :login])
+  (-> (select-keys account [:email :login :first_name :last_name])
       (assoc :institutional_id  (:id account))
       (assoc :institution (institution! auth-system))))
 
@@ -37,12 +37,12 @@
 ;;; create ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn get-or-create-user [account auth-system tx]
-  (let [instituional-id (-> account :id presence)
+  (let [institutional-id (-> account :id presence)
         institution (institution! auth-system)]
-    (assert instituional-id)
+    (assert institutional-id)
     (or (-> (sql/from :users)
             (sql/select :*)
-            (sql/where [:= :institutional_id instituional-id])
+            (sql/where [:= :institutional_id institutional-id])
             (sql/where [:= :institution institution])
             (sql-format :inline false)
             (#(jdbc/execute-one! tx %)))
@@ -152,7 +152,6 @@
 
 (defn manage-account [account auth-system tx]
   (let [user (get-or-create-user account auth-system tx)]
-    (update-person user account auth-system tx)
     (update-user user account auth-system tx)
     (update-groups user account auth-system tx)
     user))

@@ -19,12 +19,12 @@ feature 'Sign in /out with password'  do
     expect{find("code.user-session-data")}.not_to raise_error 
     expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error 
     user_session_data = YAML.load(find("code.user-session-data").text).with_indifferent_access
-    expect(user_session_data[:person_last_name]).to be== @user.person.last_name
+    expect(user_session_data[:user_last_name]).to be== @user.last_name
     user_session_id = user_session_data[:session_id]
     expect(user_session_id).to be
     expect{UserSession.find(user_session_id)}.not_to raise_error
 
-    click_on @user.person.last_name
+    click_on @user.last_name
     find("form button", text: 'Abmelden').click
     expect(current_path).to be== '/'
     expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound

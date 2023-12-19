@@ -90,20 +90,30 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
 
     @user=User.first
 
+    # check user including full name was found in db
+    expect(@user).to be
+    expect(@user.last_name).not_to be_empty
+    expect(@user.first_name).not_to be_empty
+
     # check some content:
     expect{find("code.user-session-data")}.not_to raise_error 
     expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error 
     user_session_data = YAML.load(find("code.user-session-data").text).with_indifferent_access
-    expect(user_session_data[:person_last_name]).to be== @user.person.last_name
+    expect(user_session_data[:user_last_name]).to be== @user.last_name
+    expect(user_session_data[:user_first_name]).to be== @user.first_name
     user_session_id = user_session_data[:session_id]
     expect(user_session_id).to be
     expect{UserSession.find(user_session_id)}.not_to raise_error
 
-    click_on @user.person.last_name
+    # check person which was created along with user (not visible in UI)
+    expect(@user.last_name).to be== @user.person.last_name
+    expect(@user.first_name).to be== @user.person.first_name
+
+    click_on @user.last_name
     find("form button", text: 'Abmelden').click
     expect(current_path).to be== '/'
     expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound
-    
+
   end
 
   context 'Update account and sign-in' do
@@ -123,7 +133,6 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
     end
 
     scenario 'it works' do
-
       visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
       fill_in 'email-or-login', with: @email
       click_on 'Weiter'
@@ -140,12 +149,20 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
       # we are on the supplied return-to path:
       expect(uri.path).to be== '/auth/info'
 
+      # user and person's name before they are update
+      expect(@user.last_name).not_to be== @last_name
+      expect(@user.person.last_name).not_to be== @last_name
+      person_last_name_old = @user.person.last_name
+
       # validate updated properties
       @user.reload
-      expect(@user.person.last_name).to be== @last_name
-      expect(@user.person.first_name).to be== @first_name
+      expect(@user.last_name).to be== @last_name
+      expect(@user.first_name).to be== @first_name
       expect(@user.email).to be== @email
       expect(@user.login).to be== @login
+
+      # person's last_name must remain as it was before login
+      expect(@user.person.last_name).to be== person_last_name_old
 
     end
 

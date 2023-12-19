@@ -30,12 +30,12 @@
   description: Sign in / sign out via ext auth with management Update account and
     sign-in it works
   environment_variables:
-    RSPEC_NAME: "./spec/features/sign-in_sign-out/external-auth_with-management_spec.rb:125"
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/external-auth_with-management_spec.rb:135"
     RSPEC_TEST: "./spec/features/sign-in_sign-out/external-auth_with-management_spec.rb[1:2:1]"
 "./spec/features/sign-in_sign-out/external-auth_with-management_spec.rb[1:2:2]":
   name: "./spec/features/sign-in_sign-out/external-auth_with-management_spec.rb[1:2:2]"
   description: Sign in / sign out via ext auth with management Update account and
     sign-in it updates groups, adds and removes user from apropiate groups
   environment_variables:
-    RSPEC_NAME: "./spec/features/sign-in_sign-out/external-auth_with-management_spec.rb:152"
+    RSPEC_NAME: "./spec/features/sign-in_sign-out/external-auth_with-management_spec.rb:169"
     RSPEC_TEST: "./spec/features/sign-in_sign-out/external-auth_with-management_spec.rb[1:2:2]"

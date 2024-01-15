@@ -12,34 +12,34 @@
 
    :login-box-title ["Medienarchiv-Login" "Media Archive Login"]
 
-   :step1-username-label ["E-Mail oder Benutzername"
-                          "Email or username"]
+   :step1-username-label ["E-Mail"
+                          "Email"]
    :step1-submit-label ["Weiter"
                         "Continue"]
 
-   :step2-message-username-missing ["Benutzername fehlt"
-                                    "Username missing"]
-   :step2-message-login-not-possible ["Einloggen nicht möglich mit diesem Benutzernamen"
-                                      "Log in not possible with with this username"]
-   :step2-username-label ["Benutzername"
-                          "Username"]
+   :step2-message-username-missing ["E-Mail fehlt"
+                                    "Email missing"]
+   :step2-message-login-not-possible ["Einloggen nicht möglich mit dieser E-Mail"
+                                      "Log in not possible with with this email"]
+   :step2-username-label ["E-Mail"
+                          "Email"]
    :step2-login-as ["Anmelden als"
                     "Login as"]
    :step2-back-label ["Zurück"
                       "Back"]
-   :step2-change-username-label ["Anderer Benutzername"
-                                 "Other username"]
+   :step2-change-username-label ["Andere E-Mail"
+                                 "Other email"]
 
    :step3-message-password-required ["Passwort ist ein Pflichtfeld"
                                      "Password is required"]
-   :step3-message-login-failed ["Falscher Benutzername/Passwort"
-                                "Unknown username or wrong password"]
-   :step3-username-label ["Benutzername"
-                          "Username"]
+   :step3-message-login-failed ["Unbekannte E-Mail oder falsches Passwort"
+                                "Unknown email or wrong password"]
+   :step3-username-label ["E-Mail"
+                          "Email"]
    :step3-password-label ["Passwort"
                           "Password"]
-   :step3-change-username-label ["Anderer Benutzername"
-                                 "Other username"]
+   :step3-change-username-label ["Andere E-Mail"
+                                 "Other email"]
    :step3-submit-label ["Anmelden"
                         "Log in"]})
 

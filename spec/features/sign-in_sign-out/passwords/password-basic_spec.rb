@@ -62,7 +62,7 @@ feature 'Sign in /out with password'  do
     fill_in :password, with: "foo"
     click_on 'Anmelden'
     ActiveRecord::Base.connection 
-    expect(page).to have_content "Falscher Benutzername/Passwort"
+    expect(page).to have_content "Unbekannte E-Mail oder falsches Passwort"
     visit '/auth/info'
     expect{find("code.user-session-data")}.to raise_error 
     expect(UserSession.all()).to be_empty

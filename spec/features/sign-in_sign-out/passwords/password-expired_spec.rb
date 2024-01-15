@@ -16,7 +16,7 @@ feature 'Sign in with expired password'  do
     fill_in 'email-or-login', with: @user.email
     click_on 'Weiter'
     expect(page).to have_content \
-      "Einloggen nicht möglich mit diesem Benutzernamen"
+      "Einloggen nicht möglich mit dieser E-Mail"
   end
 
   scenario 'Sign in with expired password fails' do

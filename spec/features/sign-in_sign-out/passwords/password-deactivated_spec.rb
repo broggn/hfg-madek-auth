@@ -19,7 +19,7 @@ feature 'Sign in with deactivated account'  do
     fill_in 'email-or-login', with: @user.email
     click_on 'Weiter'
     expect(page).to have_content \
-      "Einloggen nicht möglich mit diesem Benutzernamen"
+      "Einloggen nicht möglich mit dieser E-Mail"
   end
 
   scenario 'Sign in with deactivated account fails' do

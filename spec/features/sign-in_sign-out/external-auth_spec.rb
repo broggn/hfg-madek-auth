@@ -129,7 +129,7 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     visit '/auth/sign-in'
     fill_in 'email-or-login', with: @user.email
     click_on 'Weiter'
-    expect(page).to have_content "Einloggen nicht möglich mit diesem Benutzernamen"
+    expect(page).to have_content "Einloggen nicht möglich mit dieser E-Mail"
   end
 
 end

@@ -1,23 +1,22 @@
 (ns madek.auth.resources.sign-in.main
   (:require
-    [cljs.pprint :refer [pprint]]
-    [cljs.core.async :refer [go go-loop]]
-    [madek.auth.html.forms.core :as forms]
-    [madek.auth.http.client.core :as http-client]
-    [madek.auth.routes :refer [navigate! path]]
-    [madek.auth.state :as state :refer [debug?* routing*]]
-    [madek.auth.utils.core :refer [presence]]
-    [madek.auth.localization :refer [translate]]
-    [reagent.core :as reagent :rename {atom ratom}]
-    [taoensso.timbre :refer [debug error info spy warn]]))
-
+   [cljs.core.async :refer [go go-loop]]
+   [cljs.pprint :refer [pprint]]
+   [madek.auth.html.forms.core :as forms]
+   [madek.auth.http.client.core :as http-client]
+   [madek.auth.localization :refer [translate]]
+   [madek.auth.routes :refer [navigate! path]]
+   [madek.auth.state :as state :refer [debug?* routing*]]
+   [madek.auth.utils.core :refer [presence]]
+   [reagent.core :as reagent :rename {atom ratom}]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (defonce data* (ratom {}))
 
 (defn continue []
-  (navigate! (path :sign-in-user-auth-systems  {}
+  (navigate! (path :sign-in-user-auth-systems {}
                    (merge {:email-or-login (get-in @data* [:email-or-login])}
-                          (some-> @state/state* :routing 
+                          (some-> @state/state* :routing
                                   :query-params (select-keys [:return-to :lang]))))))
 
 (defn email-or-login-form []
@@ -52,6 +51,5 @@
     [email-or-login-form]]
    [page-debug]])
 
-
-(def components 
+(def components
   {:page page})

@@ -1,20 +1,18 @@
 (ns madek.auth.routing.main
   (:require
-    [clojure.pprint :refer [pprint]]
-    [clojure.walk :refer [keywordize-keys]]
-    [cuerdas.core :as str]
-    [madek.auth.html.history-navigation :as navigation]
-    [madek.auth.routes :as routes :refer [path navigate!]]
-    [madek.auth.routing.resolve :as resolve]
-    [madek.auth.state :as state]
-    [madek.auth.utils.url :as url]
-    [madek.auth.utils.yaml :as yaml]
-    [madek.auth.utils.query-params :as query-params]
-    [reagent.core :as reagent]
-    [reitit.core :as reitit]
-    [taoensso.timbre :refer [debug info warn error spy]]
-    ))
-
+   [clojure.pprint :refer [pprint]]
+   [clojure.walk :refer [keywordize-keys]]
+   [cuerdas.core :as str]
+   [madek.auth.html.history-navigation :as navigation]
+   [madek.auth.routes :as routes :refer [path navigate!]]
+   [madek.auth.routing.resolve :as resolve]
+   [madek.auth.state :as state]
+   [madek.auth.utils.query-params :as query-params]
+   [madek.auth.utils.url :as url]
+   [madek.auth.utils.yaml :as yaml]
+   [reagent.core :as reagent]
+   [reitit.core :as reitit]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 (defn on-navigate [url match]
   (let [component (resolve/resolve match)]
@@ -25,7 +23,7 @@
       (assoc state :page-nav (-> component :page-nav))
       (assoc state :query (some-> url :query))
       (assoc state :query-params (some-> url :query query-params/decode))
-      (assoc state :query-params-json-parsed  (some-> url :query (query-params/decode :parse-json? true)))
+      (assoc state :query-params-json-parsed (some-> url :query (query-params/decode :parse-json? true)))
       (assoc state :route (path (:name state)
                                 (:path-params state)
                                 (:query-params state)))

@@ -1,12 +1,10 @@
 (ns madek.auth.http.client.shared
   (:refer-clojure :exclude [str keyword send-off])
   (:require
-    [clojure.string :as string]
-    [madek.auth.utils.core :refer [keyword presence str]]
-    [reagent.core :as reagent]
-    [taoensso.timbre :refer [debug error info spy warn]]
-    ))
-
+   [clojure.string :as string]
+   [madek.auth.utils.core :refer [keyword presence str]]
+   [reagent.core :as reagent]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (defn wait-component [req]
   [:div.wait-component

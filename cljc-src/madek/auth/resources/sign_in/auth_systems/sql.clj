@@ -1,45 +1,41 @@
 (ns madek.auth.resources.sign-in.auth-systems.sql
   (:require
-    [logbug.debug :refer [debug-ns]]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [honey.sql.pg-ops :as pg-sql]
-    [madek.auth.db.core :refer [get-ds]]
-    [next.jdbc :as jdbc]
-    [taoensso.timbre :refer [debug error info spy warn]]))
-
-
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [honey.sql.pg-ops :as pg-sql]
+   [logbug.debug :refer [debug-ns]]
+   [madek.auth.db.core :refer [get-ds]]
+   [next.jdbc :as jdbc]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (defn auth-systems-match-cond [email-or-login]
-  [:and 
+  [:and
    [:<> :auth_systems.email_or_login_match nil]
    [pg-sql/regex email-or-login :auth_systems.email_or_login_match]])
-
 
 (defn user-cond [email-or-login]
   [:and
    [:raw "now() <= users.active_until"]
-   [:or 
+   [:or
     [:= [:lower :users.email] [:lower email-or-login]]
     [:= :users.login [:lower email-or-login]]]])
-
 
 (defn users-matches-and-connected-cond [email-or-login]
   "Check if the user is connected to the auth_system. The connection
   can be direct, via a group or match via email_or_login_match."
-  [:and 
+  [:and
    (user-cond email-or-login)
-   [:or 
+   [:or
     (auth-systems-match-cond email-or-login)
-    [:exists 
+    [:exists
      (-> (sql/select true)
          (sql/from [:auth_systems_users :asus])
          (sql/where [:= :asus.auth_system_id :auth_systems.id])
          (sql/where [:= :asus.user_id :users.id])
-         (sql/where [:or 
+         (sql/where [:or
                      [:= :asus.expires_at nil]
                      [:> :asus.expires_at [:now]]]))]
-    [:exists (-> (sql/select true) 
+    [:exists (-> (sql/select true)
                  (sql/from :groups_users)
                  (sql/where [:= :groups_users.user_id :users.id])
                  (sql/join :groups [:= :groups.id :groups_users.group_id])
@@ -51,32 +47,29 @@
       (sql/where (users-matches-and-connected-cond email-or-login))))
 
 (defn auth-systems-query [email-or-login]
-  (-> (sql/select 
-        [:auth_systems.external_sign_in_url :auth_system_url]
-        [:auth_systems.id :auth_system_id] 
-        [:auth_systems.name :auth_system_name]
-        [:auth_systems.type :auth_system_type]
-        [:users.id :user_id]
-        [:users.email :email] 
-        [:users.login :login])
+  (-> (sql/select
+       [:auth_systems.external_sign_in_url :auth_system_url]
+       [:auth_systems.id :auth_system_id]
+       [:auth_systems.name :auth_system_name]
+       [:auth_systems.type :auth_system_type]
+       [:users.id :user_id]
+       [:users.email :email]
+       [:users.login :login])
       (sql/from :auth_systems)
-      (sql/left-join 
-        :users (users-matches-and-connected-cond email-or-login))
+      (sql/left-join
+       :users (users-matches-and-connected-cond email-or-login))
       (sql/where [:= :auth_systems.enabled true])
-      (sql/where [:or 
+      (sql/where [:or
                   (auth-systems-match-cond email-or-login)
                   [:exists (-> email-or-login users-matches-and-connected
                                (sql/select true))]])
       (sql/order-by [:priority :desc])))
 
-
-(comment 
-  (-> "tashia_sawayn_a44f13e7@boyer.example" 
+(comment
+  (-> "tashia_sawayn_a44f13e7@boyer.example"
       auth-systems-query
       (sql-format :inline true)
-      (#(jdbc/execute-one! (get-ds) %))
-      ))
-
+      (#(jdbc/execute-one! (get-ds) %))))
 
 ;;; debug ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(debug-ns *ns*)

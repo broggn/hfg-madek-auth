@@ -3,19 +3,18 @@
    [cljs.core.async :refer [go go-loop <!]]
    [cljs.pprint :refer [pprint]]
    [clojure.set :refer [rename-keys]]
-   [clojure.walk :refer [stringify-keys]]
    [clojure.string :refer [trim]]
-   [madek.auth.html.forms.core :as forms]
+   [clojure.walk :refer [stringify-keys]]
    [madek.auth.html.components :refer [change-username-button]]
+   [madek.auth.html.forms.core :as forms]
    [madek.auth.http.client.core :as http-client]
+   [madek.auth.localization :refer [translate]]
    [madek.auth.routes :refer [navigate! path]]
    [madek.auth.state :as state :refer [debug?* hidden-routing-state-component]]
    [madek.auth.utils.core :refer [presence]]
    [madek.auth.utils.query-params :as query-params]
-   [madek.auth.localization :refer [translate]]
    [reagent.core :as reagent :refer [reaction] :rename {atom ratom}]
    [taoensso.timbre :refer [debug error info spy warn]]))
-
 
 (defonce data* (ratom {}))
 
@@ -64,7 +63,6 @@
    [:a.primary-button
     {:href (auth-system-url sys)}
     (:auth_system_name sys)]])
-
 
 (defn auth-systems []
   [:div

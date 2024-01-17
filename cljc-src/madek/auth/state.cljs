@@ -1,13 +1,11 @@
 (ns madek.auth.state
   (:require
-    [cljs.pprint :refer [pprint]]
-    [cuerdas.core :as str]
-    [madek.auth.html.dom :as dom]
-    [madek.auth.utils.core :refer [presence]]
-    [reagent.core :as reagent :refer [reaction]]
-    [taoensso.timbre :refer [debug info warn error spy]]
-    ))
-
+   [cljs.pprint :refer [pprint]]
+   [cuerdas.core :as str]
+   [madek.auth.html.dom :as dom]
+   [madek.auth.utils.core :refer [presence]]
+   [reagent.core :as reagent :refer [reaction]]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 (def routing* (reagent/atom {}))
 
@@ -20,11 +18,11 @@
 (def user* (reagent/atom nil))
 
 (def state* (reagent/reaction
-              {:debug @debug?*
-               :routing @routing*
-               :server @server*
-               :settings @settings*
-               :user @user*}))
+             {:debug @debug?*
+              :routing @routing*
+              :server @server*
+              :settings @settings*
+              :user @user*}))
 
 (defn hidden-routing-state-component
   [& {:keys [did-mount did-change did-update will-unmount]
@@ -47,22 +45,22 @@
                             (when (not= old-state new-state)
                               (reset! old-state* new-state)
                               (apply handler (concat
-                                               [old-state new-state]
-                                               args)))))]
+                                              [old-state new-state]
+                                              args)))))]
     (reagent/create-class
-      {:component-will-unmount (fn [& args] (apply will-unmount args))
-       :component-did-mount (fn [& args]
-                              (apply did-mount args)
+     {:component-will-unmount (fn [& args] (apply will-unmount args))
+      :component-did-mount (fn [& args]
+                             (apply did-mount args)
+                             (eval-did-change did-change args))
+      :component-did-update (fn [& args]
+                              (apply did-update args)
                               (eval-did-change did-change args))
-       :component-did-update (fn [& args]
-                               (apply did-update args)
-                               (eval-did-change did-change args))
-       :reagent-render
-       (fn [& {:keys []
-               :or {}}]
-         [:div.hidden-routing-state-component
-          {:style {:display :none}}
-          [:pre (with-out-str (pprint @routing*))]])})))
+      :reagent-render
+      (fn [& {:keys []
+              :or {}}]
+        [:div.hidden-routing-state-component
+         {:style {:display :none}}
+         [:pre (with-out-str (pprint @routing*))]])})))
 
 (defn debug-ui-component []
   [:div.debug.state-debug
@@ -72,9 +70,7 @@
       [:h4 "Debug global " [:code "@state*"]]
       [:pre.bg-light
        [:code
-        (with-out-str (pprint @state*))
-        ]]])])
-
+        (with-out-str (pprint @state*))]]])])
 
 (defn init []
   (info "initializing state ...")

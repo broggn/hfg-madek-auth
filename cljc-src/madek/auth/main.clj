@@ -1,26 +1,26 @@
 (ns madek.auth.main
-  (:require 
-    [madek.auth.utils.yaml :as yaml]
-    [clojure.pprint :refer [pprint]]
-    [clojure.tools.cli :as cli]
-    [environ.core :refer [env]]
-    [madek.auth.server :as server]
-    [madek.auth.utils.logging :as logging]
-    [madek.auth.utils.repl :as repl]
-    [taoensso.timbre :refer [debug error info spy warn]])
+  (:require
+   [clojure.pprint :refer [pprint]]
+   [clojure.tools.cli :as cli]
+   [environ.core :refer [env]]
+   [madek.auth.server :as server]
+   [madek.auth.utils.logging :as logging]
+   [madek.auth.utils.repl :as repl]
+   [madek.auth.utils.yaml :as yaml]
+   [taoensso.timbre :refer [debug error info spy warn]])
   (:gen-class))
 
 (def cli-options
   (concat
-    [["-h" "--help"]
-     [nil "--dev-mode DEV_MODE" "dev mode true|false yaml boolean"
-      :default (or (some-> :dev-mode env yaml/parse) false)
-      :parse-fn yaml/parse 
-      :validate [boolean? "Must parse to a boolean"]]]
-    repl/cli-options))
+   [["-h" "--help"]
+    [nil "--dev-mode DEV_MODE" "dev mode true|false yaml boolean"
+     :default (or (some-> :dev-mode env yaml/parse) false)
+     :parse-fn yaml/parse
+     :validate [boolean? "Must parse to a boolean"]]]
+   repl/cli-options))
 
 (defn main-usage [options-summary & more]
-  (->> ["" 
+  (->> [""
         "Madek Auth Service"
         ""
         "usage: madek-auth [<opts>] SCOPE [<scope-opts>] ..."
@@ -38,7 +38,7 @@
        flatten (clojure.string/join \newline)))
 
 (defn main [args]
-  (try 
+  (try
     (logging/init)
     (let [{:keys [options arguments errors summary]}
           (cli/parse-opts args cli-options :in-order true)
@@ -58,7 +58,6 @@
     (catch Exception ex
       (warn ex)
       (throw ex))))
-
 
 (defonce args* (atom nil))
 (when @args* (main @args*))

@@ -1,26 +1,25 @@
 (ns madek.auth.resources.sign-in.auth-systems.auth-system.password.request
   (:require
-    [madek.auth.utils.json :as json]
-    [lambdaisland.uri :as uri]
-    [cljs.core.async :refer [<! go go-loop]]
-    [cljs.pprint :refer [pprint]]
-    [madek.auth.html.forms.core :as forms]
-    [madek.auth.html.components :refer [change-username-button]]
-    [madek.auth.http.client.core :as http-client]
-    [madek.auth.routes :refer [navigate! path]]
-    [madek.auth.state :as state :refer [debug?* hidden-routing-state-component]]
-    [madek.auth.utils.core :refer [presence]]
-    [madek.auth.localization :refer [translate]]
-    [reagent.core :as reagent :refer [reaction] :rename {atom ratom}]
-    [taoensso.timbre :refer [debug error info spy warn]]))
-
+   [cljs.core.async :refer [<! go go-loop]]
+   [cljs.pprint :refer [pprint]]
+   [lambdaisland.uri :as uri]
+   [madek.auth.html.components :refer [change-username-button]]
+   [madek.auth.html.forms.core :as forms]
+   [madek.auth.http.client.core :as http-client]
+   [madek.auth.localization :refer [translate]]
+   [madek.auth.routes :refer [navigate! path]]
+   [madek.auth.state :as state :refer [debug?* hidden-routing-state-component]]
+   [madek.auth.utils.core :refer [presence]]
+   [madek.auth.utils.json :as json]
+   [reagent.core :as reagent :refer [reaction] :rename {atom ratom}]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (def auth-system* (ratom nil))
 (def data* (ratom {}))
 (def validation-message* (ratom nil))
 
 (defn continue [resp-data]
-  (if-let [return-to (not-empty (get-in  @state/routing* [:query-params :return-to]))]
+  (if-let [return-to (not-empty (get-in @state/routing* [:query-params :return-to]))]
     (navigate! return-to :reload true)
     (navigate! "/my" :reload true)))
 
@@ -51,17 +50,17 @@
         (#(and % (-> % :response not))))))
 
 (defn submit-sign-in []
-  (go (some-> 
-        {:url (path :sign-in-user-auth-system-sign-in
-                    (:path-params @state/routing*)
-                    (:query-params @state/routing*))
-         :method :post
-         :modal-on-request false
-         :modal-filter #(-> % password-mismatch? not)
-         :json-params @data*}
-        http-client/request :chan <!
-        http-client/filter-success :body
-        continue)))
+  (go (some->
+       {:url (path :sign-in-user-auth-system-sign-in
+                   (:path-params @state/routing*)
+                   (:query-params @state/routing*))
+        :method :post
+        :modal-on-request false
+        :modal-filter #(-> % password-mismatch? not)
+        :json-params @data*}
+       http-client/request :chan <!
+       http-client/filter-success :body
+       continue)))
 
 (defn page-debug []
   [:<> (when @debug?*
@@ -119,5 +118,5 @@
      [form]]]
    [page-debug]])
 
-(def components 
+(def components
   {:page page})

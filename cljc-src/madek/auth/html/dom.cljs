@@ -1,11 +1,11 @@
 (ns madek.auth.html.dom
   (:require
-    [cuerdas.core :as str]
-    [goog.dom :as dom]
-    [goog.dom.dataset :as dataset]
-    [madek.auth.utils.json :as json]
-    [madek.auth.utils.url :as url]
-    [taoensso.timbre :refer [debug info warn error spy]]))
+   [cuerdas.core :as str]
+   [goog.dom :as dom]
+   [goog.dom.dataset :as dataset]
+   [madek.auth.utils.json :as json]
+   [madek.auth.utils.url :as url]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 (defn data-attribute
   "Retrieves JSON and urlencoded data attribute with attribute-name

@@ -1,7 +1,6 @@
 (ns madek.auth.http.shared
   (:require
-    [taoensso.timbre :refer [debug error info spy warn]]
-    ))
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (def ANTI_CRSF_TOKEN_COOKIE_NAME "madek.auth.anti-csrf-token")
 

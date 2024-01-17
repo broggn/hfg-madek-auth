@@ -1,17 +1,16 @@
 (ns madek.auth.db.core
   (:require
-    [environ.core :refer [env]]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [madek.auth.db.type-conversion]
-    [madek.auth.utils.cli :refer [long-opt-for-key]]
-    [next.jdbc :as jdbc]
-    [next.jdbc.connection :as connection]
-    [next.jdbc.result-set :as jdbc-rs]
-    [taoensso.timbre :refer [debug info warn error spy]])
+   [environ.core :refer [env]]
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [madek.auth.db.type-conversion]
+   [madek.auth.utils.cli :refer [long-opt-for-key]]
+   [next.jdbc :as jdbc]
+   [next.jdbc.connection :as connection]
+   [next.jdbc.result-set :as jdbc-rs]
+   [taoensso.timbre :refer [debug info warn error spy]])
   (:import
-    [com.zaxxer.hikari HikariDataSource]))
-
+   [com.zaxxer.hikari HikariDataSource]))
 
 (defonce ^:private ds* (atom nil))
 
@@ -20,7 +19,6 @@
 
 (defn get-ds []
   (jdbc/with-options @ds* builder-fn-options-default))
-
 
 ;;; CLI ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -67,20 +65,16 @@
                  16)
     :parse-fn #(Integer/parseInt %)]])
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
 
 (defn wrap-tx [handler]
   (fn [request]
     (jdbc/with-transaction [tx @ds*]
       (try
-        (let [tx-with-opts  (jdbc/with-options tx builder-fn-options-default )]
+        (let [tx-with-opts (jdbc/with-options tx builder-fn-options-default)]
           (let [resp (handler (assoc request :tx tx-with-opts))]
             (when-let [status (:status resp)]
-              (when (>= status 400 )
+              (when (>= status 400)
                 (warn "Rolling back transaction because error status " status)
                 (.rollback tx)))
             resp))
@@ -89,8 +83,6 @@
           (debug (.get-cause th))
           (.rollback tx)
           (throw th))))))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -106,21 +98,21 @@
 (defn init-ds [db-options]
   (close)
   (let [ds (connection/->pool
-             HikariDataSource
-             {:dbtype "postgres"
-              :dbname (get db-options db-name-key)
-              :username (get db-options db-user-key)
-              :password (get db-options db-password-key)
-              :host (get db-options db-host-key)
-              :port (get db-options db-port-key)
-              :maximumPoolSize  (get db-options db-max-pool-size-key)
-              :minimumIdle       (get db-options db-min-pool-size-key)
-              :autoCommit true
-              :connectionTimeout 30000
-              :validationTimeout 5000
-              :idleTimeout       (* 1 60 1000) ; 1 minute
-              :maxLifetime       (* 1 60 60 1000) ; 1 hour
-              })]
+            HikariDataSource
+            {:dbtype "postgres"
+             :dbname (get db-options db-name-key)
+             :username (get db-options db-user-key)
+             :password (get db-options db-password-key)
+             :host (get db-options db-host-key)
+             :port (get db-options db-port-key)
+             :maximumPoolSize (get db-options db-max-pool-size-key)
+             :minimumIdle (get db-options db-min-pool-size-key)
+             :autoCommit true
+             :connectionTimeout 30000
+             :validationTimeout 5000
+             :idleTimeout (* 1 60 1000) ; 1 minute
+             :maxLifetime (* 1 60 60 1000) ; 1 hour
+             })]
     ;; this code initializes the pool and performs a validation check:
     (.close (jdbc/get-connection ds))
     (reset! ds* ds)

@@ -1,12 +1,11 @@
 (ns madek.auth.utils.exit
   (:refer-clojure :exclude [str keyword])
   (:require
-    [clj-pid.core :as pid]
-    [clojure.java.io :as io]
-    [environ.core :refer [env]]
-    [signal.handler]
-    [taoensso.timbre :refer [debug info warn error spy]]))
-
+   [clj-pid.core :as pid]
+   [clojure.java.io :as io]
+   [environ.core :refer [env]]
+   [signal.handler]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 (defonce options* (atom nil))
 
@@ -20,9 +19,7 @@
 
 (def pid-file-options
   [[nil "--pid-file PID_FILE"
-    :default (some-> :pid-file env)
-    ]])
-
+    :default (some-> :pid-file env)]])
 
 (defn init [options]
   (info 'init [options])

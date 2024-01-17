@@ -1,23 +1,22 @@
 (ns madek.auth.http.client.modals
   (:refer-clojure :exclude [str keyword send-off])
   (:require-macros
-    [reagent.ratom :as ratom :refer [reaction]]
-    [cljs.core.async.macros :refer [go]])
+   [cljs.core.async.macros :refer [go]]
+   [reagent.ratom :as ratom :refer [reaction]])
   (:require
-    [cljs-http.client :as http-client]
-    [cljs.core.async :as async :refer [timeout]]
-    [clojure.pprint :refer [pprint]]
-    [clojure.string :as string]
-    [goog.string :as gstring]
-    [goog.string.format]
-    [madek.auth.http.client.core :refer [requests* dismiss]]
-    [madek.auth.http.client.shared :refer [wait-component]]
-    [madek.auth.html.clipboard :as clipboard]
-    [madek.auth.utils.core :refer [keyword presence str]]
-    [madek.auth.http.shared :refer [HTTP_UNSAFE_METHODS]]
-    [reagent.core :as reagent]
-    [taoensso.timbre :as logging]
-    ))
+   [cljs-http.client :as http-client]
+   [cljs.core.async :as async :refer [timeout]]
+   [clojure.pprint :refer [pprint]]
+   [clojure.string :as string]
+   [goog.string :as gstring]
+   [goog.string.format]
+   [madek.auth.html.clipboard :as clipboard]
+   [madek.auth.http.client.core :refer [requests* dismiss]]
+   [madek.auth.http.client.shared :refer [wait-component]]
+   [madek.auth.http.shared :refer [HTTP_UNSAFE_METHODS]]
+   [madek.auth.utils.core :refer [keyword presence str]]
+   [reagent.core :as reagent]
+   [taoensso.timbre :as logging]))
 
 (defn status [request]
   (cond (empty? (-> request :response)) :pending
@@ -26,26 +25,25 @@
 
 (def current-modal-request*
   (reaction
-    (->> @requests*
-         (map second)
-         (sort-by :timestamp)
-         (filter (fn [req] 
-                   (if-let [f (:modal-filter req)]
-                     (f req)
-                     true)))
-         (filter (fn [req]
-                   (case (status req)
-                     :pending (:modal-on-request req)
-                     :success (:modal-on-response-success req)
-                     :error (:modal-on-response-error req))))
-         first)))
+   (->> @requests*
+        (map second)
+        (sort-by :timestamp)
+        (filter (fn [req]
+                  (if-let [f (:modal-filter req)]
+                    (f req)
+                    true)))
+        (filter (fn [req]
+                  (case (status req)
+                    :pending (:modal-on-request req)
+                    :success (:modal-on-response-success req)
+                    :error (:modal-on-response-error req))))
+        first)))
 
 (defn bootstrap-status [modal-status]
   (case modal-status
     :pending :default
     :success :success
     :error :danger))
-
 
 (defn dismiss-button-component
   ([request]
@@ -71,7 +69,7 @@
          (some-> request :method str string/upper-case) " "
          (some-> request :url str) " "]]]
    (when-not (some-> request :response presence)
-     [wait-component request] )
+     [wait-component request])
    (when (>= (-> request :response :status) 400)
      [:<>
       (when-let [body (some-> request :response :body presence)]

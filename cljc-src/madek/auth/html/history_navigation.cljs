@@ -1,28 +1,28 @@
 (ns madek.auth.html.history-navigation
   "SPA History Navigation"
   (:require
-    [goog.events :as gevents]
-    [lambdaisland.uri :as uri]
-    [clojure.string :as string]
-    [taoensso.timbre :refer [debug info warn error spy]]))
+   [clojure.string :as string]
+   [goog.events :as gevents]
+   [lambdaisland.uri :as uri]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 ;; dynamic refs set by init
 (defonce popstate-listener-key nil)
 (defonce click-handler-listener-key nil)
 (declare
-  on-navigate
-  navigate?)
+ on-navigate
+ navigate?)
 
 ;; helpers, static refs defined below ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (declare
-  click-handler
-  event-target
-  handle-anchor-click?
-  location-url
-  popstate-handler
-  replace-strategy
-  same-scheme-host-port?
-  search-a-node-element)
+ click-handler
+ event-target
+ handle-anchor-click?
+ location-url
+ popstate-handler
+ replace-strategy
+ same-scheme-host-port?
+ search-a-node-element)
 
 ;;; main functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -71,12 +71,11 @@
   (def ^:dynamic navigate? navigate?)
   (set! click-handler-listener-key
         (goog.events/listen
-          js/document goog.events.EventType.CLICK click-handler))
+         js/document goog.events.EventType.CLICK click-handler))
   (set! popstate-listener-key
         (goog.events/listen
-          js/window goog.events.EventType.POPSTATE popstate-handler false))
+         js/window goog.events.EventType.POPSTATE popstate-handler false))
   (navigate! (location-url)))
-
 
 ;;; navigation helpers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -87,7 +86,6 @@
 
 (defn- popstate-handler [_]
   (navigate! (location-url)))
-
 
 ;;; WINDOW and DOM helpers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -117,7 +115,7 @@
 (defn not-self-target? [el]
   "Element targets some other frame|tab|window than itself"
   (not (or (not (.hasAttribute el "target"))
-        (contains? #{"" "_self"} (.getAttribute el "target")))))
+           (contains? #{"" "_self"} (.getAttribute el "target")))))
 
 (defn- content-editable-element? [el]
   "True if and only if the anchor is inside a contenteditable div"

@@ -1,16 +1,14 @@
 (ns madek.auth.html.spa.main
-  (:require 
-    [madek.auth.http.client.modals :as http-client-modal]
-    [reagent.dom :as rdom]
-    [madek.auth.html.spa.page :refer [header footer]]
-    [madek.auth.state :as state]
-    [taoensso.timbre :refer [debug error info spy warn]]
-    ))
+  (:require
+   [madek.auth.html.spa.page :refer [header footer]]
+   [madek.auth.http.client.modals :as http-client-modal]
+   [madek.auth.state :as state]
+   [reagent.dom :as rdom]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (defn not-found-page []
   [:div.page
-   [:h1.text-danger "Page Not-Found"]
-   ])
+   [:h1.text-danger "Page Not-Found"]])
 
 (defn html []
   [:<>

@@ -1,37 +1,33 @@
 (ns madek.auth.http.session
   (:require
-    [buddy.core.codecs :refer [bytes->b64 bytes->str]]
-    [buddy.core.hash :as hash]
-    [cuerdas.core :as str]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [logbug.debug :refer [debug-ns]]
-    [madek.auth.constants :refer [MADEK_SESSION_COOKIE_NAME]]
-    [madek.auth.utils.core :refer [presence presence!]]
-    [next.jdbc :as jdbc]
-    [taoensso.timbre :refer [debug error info spy warn]]
-    )
+   [buddy.core.codecs :refer [bytes->b64 bytes->str]]
+   [buddy.core.hash :as hash]
+   [cuerdas.core :as str]
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [logbug.debug :refer [debug-ns]]
+   [madek.auth.constants :refer [MADEK_SESSION_COOKIE_NAME]]
+   [madek.auth.utils.core :refer [presence presence!]]
+   [next.jdbc :as jdbc]
+   [taoensso.timbre :refer [debug error info spy warn]])
   (:import
-    [java.util UUID]
-    ))
-
+   [java.util UUID]))
 
 ;#### helper ##################################################################
 
 (defn token-hash [token]
   (-> token hash/sha256 bytes->b64 bytes->str))
 
-
 ;#### create ##################################################################
 
 (defn session-data [user-auth-system token request]
   (-> user-auth-system
       (select-keys [:auth_system_id :user_id])
-      (merge 
-        {:token_hash (token-hash token) 
-         :token_part (str/slice token 0 5)
-         :meta_data  [:lift {:user_agent (get-in request [:headers "user-agent"])
-                             :remote_addr (get-in request [:remote-addr])}]})))
+      (merge
+       {:token_hash (token-hash token)
+        :token_part (str/slice token 0 5)
+        :meta_data [:lift {:user_agent (get-in request [:headers "user-agent"])
+                           :remote_addr (get-in request [:remote-addr])}]})))
 
 (defn create-user-session-response
   [user-auth-system {tx :tx :as request}]
@@ -39,7 +35,7 @@
   the original token to be used as the value of the session cookie."
   (let [token (str (UUID/randomUUID))
         user-session (-> (sql/insert-into :user_sessions)
-                         (sql/values [(session-data user-auth-system 
+                         (sql/values [(session-data user-auth-system
                                                     token request)])
                          (sql-format)
                          (#(jdbc/execute-one! tx % {:return-keys true})))]
@@ -52,15 +48,13 @@
                 :path "/"
                 :secure false}}}))
 
-
 ;#### wrap ####################################################################
 
-
 (def expiration-sql-expr
-  [:+ :user_sessions.created_at 
+  [:+ :user_sessions.created_at
    [:* :auth_systems.session_max_lifetime_hours [:raw "INTERVAL '1 hour'"]]])
 
-(def selects 
+(def selects
   [[:auth_systems.id :auth_system_id]
    [:auth_systems.name :auth_system_name]
    [:first_name :user_first_name]
@@ -88,22 +82,20 @@
       (#(jdbc/execute-one! tx %))))
 
 (defn session-token-hashed [request]
-  (some-> request :cookies (get MADEK_SESSION_COOKIE_NAME nil) 
+  (some-> request :cookies (get MADEK_SESSION_COOKIE_NAME nil)
           :value token-hash))
 
 (defn authenticate [{tx :tx :as request}]
-  (if-let [user-session (some-> request 
+  (if-let [user-session (some-> request
                                 session-token-hashed
                                 (user-session tx))]
     (assoc request :authenticated-entity user-session)
     request))
 
-
 (defn wrap [handler]
   (fn [req]
     (debug 'session/handler)
     (-> req authenticate handler)))
-
 
 ;#### debug ###################################################################
 ;(debug-ns *ns*)

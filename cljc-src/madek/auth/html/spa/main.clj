@@ -1,12 +1,11 @@
 (ns madek.auth.html.spa.main
   (:require
-    [clojure.java.io :as io]
-    [hiccup.page :refer [html5 include-js include-css]]
-    [madek.auth.utils.cli :refer [long-opt-for-key]]
-    [madek.auth.utils.json :as json]
-    [madek.auth.utils.url :as url]
-    [taoensso.timbre :refer [debug error info spy warn]]
-    ))
+   [clojure.java.io :as io]
+   [hiccup.page :refer [html5 include-js include-css]]
+   [madek.auth.utils.cli :refer [long-opt-for-key]]
+   [madek.auth.utils.json :as json]
+   [madek.auth.utils.url :as url]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (defn head []
   [:head
@@ -17,7 +16,7 @@
 
 (def js-manifest
   (some-> "auth/public/js/manifest.edn"
-         io/resource
+          io/resource
           slurp
           read-string))
 
@@ -27,21 +26,20 @@
        (map #(str "/auth/public/js/" %))
        (map hiccup.page/include-js)))
 
-
-(defn html-handler [{user :authenticated-entity 
-                     settings :settings 
+(defn html-handler [{user :authenticated-entity
+                     settings :settings
                      :as request}]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body (html5
-           (head)
-           [:body {:data-user (-> user json/to-json url/encode)
-                   :data-settings (-> settings json/to-json url/encode)}
-            [:div#app {:class "full-height-container"}
-             [:div.loading-screen
-              [:h1 "Madek Authentication Service"]
-              [:p "Loading application ..."]]]]
-           js-includes)})
+          (head)
+          [:body {:data-user (-> user json/to-json url/encode)
+                  :data-settings (-> settings json/to-json url/encode)}
+           [:div#app {:class "full-height-container"}
+            [:div.loading-screen
+             [:h1 "Madek Authentication Service"]
+             [:p "Loading application ..."]]]]
+          js-includes)})
 
 (defn dispatch [root-handler request]
   (if (and (-> request :route :data :bypass-spa not)

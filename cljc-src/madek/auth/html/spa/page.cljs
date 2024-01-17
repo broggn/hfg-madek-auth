@@ -1,13 +1,11 @@
 (ns madek.auth.html.spa.page
   (:require
-    ["react-bootstrap" :as bs]
-    [madek.auth.routes :refer [path]]
-    [madek.auth.state :as state]
-    [madek.auth.localization :refer [localized-setting]]
-    [taoensso.timbre :refer [debug info warn error spy]]
-    [madek.auth.html.user :as user]
-    ))
-
+   ["react-bootstrap" :as bs]
+   [madek.auth.html.user :as user]
+   [madek.auth.localization :refer [localized-setting]]
+   [madek.auth.routes :refer [path]]
+   [madek.auth.state :as state]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 (defn header []
   (let [brand-logo-url (some-> @state/settings* :brand_logo_url
@@ -19,7 +17,6 @@
        [:h1.header-brand-text__instance-name (localized-setting :site_titles)]
        [:h2.header-brand-text__brand-name (localized-setting :brand_texts)]]]
      [:div [user/navbar-part-user]]]))
-
 
 (defn footer []
   [:footer.footer.container-inverted

@@ -1,14 +1,14 @@
-(ns madek.auth.utils.ring-audits 
+(ns madek.auth.utils.ring-audits
   (:require
-    [cuerdas.core :as str]
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [logbug.debug :refer [debug-ns]]
-    [madek.auth.db.core :as db]
-    [madek.auth.http.shared :refer [HTTP_SAFE_METHODS]]
-    [next.jdbc :as jdbc]
-    [next.jdbc.sql :refer [query] :rename {query jdbc-query}]
-    [taoensso.timbre :refer [error warn info debug spy]])
+   [cuerdas.core :as str]
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [logbug.debug :refer [debug-ns]]
+   [madek.auth.db.core :as db]
+   [madek.auth.http.shared :refer [HTTP_SAFE_METHODS]]
+   [next.jdbc :as jdbc]
+   [next.jdbc.sql :refer [query] :rename {query jdbc-query}]
+   [taoensso.timbre :refer [error warn info debug spy]])
   (:import [clojure.lang ExceptionInfo]))
 
 (defn txid [tx]
@@ -36,7 +36,7 @@
   "Perstist the response, see persist-request for details."
   (-> (sql/insert-into :audited_responses)
       (sql/values [{:txid txid
-                    :status (:status response)}] )
+                    :status (:status response)}])
       (sql-format)
       (#(jdbc/execute-one! (db/get-ds) % {:return-keys true}))))
 

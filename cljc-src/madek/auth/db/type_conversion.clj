@@ -1,32 +1,28 @@
 (ns madek.auth.db.type-conversion
   (:require
-    [honey.sql :refer [format] :rename {format sql-format}]
-    [honey.sql.helpers :as sql]
-    [madek.auth.utils.json :as json]
-    [next.jdbc :as jdbc]
-    [next.jdbc.connection :as connection]
-    [next.jdbc.date-time]
-    [next.jdbc.prepare :as prepare]
-    [next.jdbc.result-set :as jdbc-rs]
-    [taoensso.timbre :refer [debug info warn error spy]])
+   [honey.sql :refer [format] :rename {format sql-format}]
+   [honey.sql.helpers :as sql]
+   [madek.auth.utils.json :as json]
+   [next.jdbc :as jdbc]
+   [next.jdbc.connection :as connection]
+   [next.jdbc.date-time]
+   [next.jdbc.prepare :as prepare]
+   [next.jdbc.result-set :as jdbc-rs]
+   [taoensso.timbre :refer [debug info warn error spy]])
   (:import
-    [java.sql Array PreparedStatement]
-    [org.postgresql.util PGobject]
-    ))
-
+   [java.sql Array PreparedStatement]
+   [org.postgresql.util PGobject]))
 
 ;;; Time ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (next.jdbc.date-time/read-as-instant)
 
-
 ;;; PostgreSQL Arrays ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (extend-protocol jdbc-rs/ReadableColumn
   Array
-  (read-column-by-label [^Array v _]    (vec (.getArray v)))
-  (read-column-by-index [^Array v _ _]  (vec (.getArray v))))
-
+  (read-column-by-label [^Array v _] (vec (.getArray v)))
+  (read-column-by-index [^Array v _ _] (vec (.getArray v))))
 
 ;;; PostgreSQL JSON ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -44,13 +40,12 @@
   "Transform PGobject containing `json` or `jsonb` value to Clojure
   data."
   [^org.postgresql.util.PGobject v]
-  (let [type  (.getType v)
+  (let [type (.getType v)
         value (.getValue v)]
     (if (#{"jsonb" "json"} type)
       (when value
         (with-meta (json/decode value) {:pgtype type}))
       value)))
-
 
 ;; if a SQL parameter is a Clojure hash map or vector, it'll be transformed
 ;; to a PGobject for JSON/JSONB:

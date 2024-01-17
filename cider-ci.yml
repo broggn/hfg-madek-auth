@@ -23,6 +23,15 @@ jobs:
         include:
           - path: cider-ci/context-components/lint/git-lint.yml
             submodule: [datalayer]
+        cljc-lint:
+          tasks:
+            cljc-lint:
+              scripts:
+                test:
+                  body: |
+                    #!/usr/bin/env bash
+                    set -euo pipefail
+                    ./bin/cljfmt-check
 
   check-feature-tasks:
     name: Check if feature tasks are up to date
@@ -43,22 +52,22 @@ jobs:
       This jobs checks with a dummy execution if all scripts are working
       together.
     context:
-      include: 
+      include:
         - cider-ci/context-components/test-base.yml
-      tasks: 
-        dummy: 
+      tasks:
+        dummy:
           scripts:
             test:
               body: "echo '✔︎ just a no-op dummy' ; exit 0"
 
   basic-features:
     name: Basic features
-    depends_on: &BASIC_DEPS 
+    depends_on: &BASIC_DEPS
       preflight passed: &PREFLIGHT
         type: job
         job_key: specs-preflight-check
         states: [passed]
-      check feature tasks: &FEATURE_TASKS 
+      check feature tasks: &FEATURE_TASKS
         type: job
         job_key: check-feature-tasks
         states: [passed]
@@ -73,7 +82,7 @@ jobs:
         type: branch
         include_match: ^.+$
     context:
-      include: 
+      include:
         - cider-ci/context-components/basic-features.yml
 
   extauth-features:
@@ -85,9 +94,9 @@ jobs:
     run_when: *EXTAUTH_DEPS
     name: External authentication features
     description: |
-      External authentication features. 
+      External authentication features.
     context:
-      include: 
+      include:
         - cider-ci/context-components/extauth-features.yml
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

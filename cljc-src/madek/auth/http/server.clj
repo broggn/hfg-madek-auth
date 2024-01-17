@@ -1,16 +1,14 @@
 (ns madek.auth.http.server
   (:refer-clojure :exclude [str keyword])
   (:require
-    [madek.auth.utils.cli :refer [long-opt-for-key]]
-    [environ.core :refer [env]]
-    [org.httpkit.server :as http-kit]
-    [taoensso.timbre :refer [debug info warn error]]))
-
+   [environ.core :refer [env]]
+   [madek.auth.utils.cli :refer [long-opt-for-key]]
+   [org.httpkit.server :as http-kit]
+   [taoensso.timbre :refer [debug info warn error]]))
 
 ;;; cli-options ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defonce options* (atom nil))
-
 
 (def ncpus (.availableProcessors (Runtime/getRuntime)))
 (def http-server-port-key :http-server-port)
@@ -31,7 +29,6 @@
     :parse-fn #(Integer/parseInt %)
     :validate [#(<= 1 % ncpus) "Must be an integer <= num cpus"]]])
 
-
 ;;; server ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defonce server* (atom nil))
@@ -48,9 +45,9 @@
   (info "starting HTTP server " @options* " ...")
   (reset! server*
           (http-kit/run-server
-            handler
-            {:ip (http-server-bind-key @options*)
-             :port (http-server-port-key @options*)
-             :thread (http-server-threads-key @options*)
-             :worker-name-prefix "http-server-worker-"}))
+           handler
+           {:ip (http-server-bind-key @options*)
+            :port (http-server-port-key @options*)
+            :thread (http-server-threads-key @options*)
+            :worker-name-prefix "http-server-worker-"}))
   (info "started HTTP server"))

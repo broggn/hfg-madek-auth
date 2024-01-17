@@ -1,13 +1,11 @@
 (ns madek.auth.utils.repl
   (:require
-    [clj-yaml.core :as yaml]
-    [clojure.java.io :as io]
-    [environ.core :refer [env]]
-    [madek.auth.utils.cli :refer [long-opt-for-key]]
-    [nrepl.server :as nrepl-server :refer [start-server stop-server]]
-    [taoensso.timbre :refer [debug error info spy warn]]
-    ))
-
+   [clj-yaml.core :as yaml]
+   [clojure.java.io :as io]
+   [environ.core :refer [env]]
+   [madek.auth.utils.cli :refer [long-opt-for-key]]
+   [nrepl.server :as nrepl-server :refer [start-server stop-server]]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 ;;; cli-options ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -31,10 +29,8 @@
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]
    [nil (long-opt-for-key repl-bind-key) "nREPL bind interface"
     :default (or (some-> repl-bind-key env) "localhost")]
-   [nil (long-opt-for-key repl-port-file-key ) "write port to this file; NO (or any YAML falsy) disables this"
+   [nil (long-opt-for-key repl-port-file-key) "write port to this file; NO (or any YAML falsy) disables this"
     :default (or (some-> repl-port-file-key env yaml/parse-string) ".nrepl-port")]])
-
-
 
 ;;; server ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

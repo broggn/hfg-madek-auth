@@ -1,14 +1,12 @@
-(ns madek.auth.server 
-  (:require 
-    [clojure.pprint :refer [pprint]]
-    [clojure.tools.cli :as cli]
-    [madek.auth.db.core :as db]
-    [madek.auth.http.server :as http-server]
-    [madek.auth.routing.main :as routing]
-    [madek.auth.utils.exit :as exit]
-    [taoensso.timbre :refer [debug error info spy warn]]
-    ))
-
+(ns madek.auth.server
+  (:require
+   [clojure.pprint :refer [pprint]]
+   [clojure.tools.cli :as cli]
+   [madek.auth.db.core :as db]
+   [madek.auth.http.server :as http-server]
+   [madek.auth.routing.main :as routing]
+   [madek.auth.utils.exit :as exit]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (def ^:dynamic options {})
 
@@ -21,7 +19,7 @@
 
 (defn run [options]
   (def ^:dynamic options options)
-  (info "run with options:" (str options ))
+  (info "run with options:" (str options))
   (exit/init options)
   (.addShutdownHook (Runtime/getRuntime) (Thread. #(shutdown)))
   ;(state/init)
@@ -30,16 +28,14 @@
   ;(settings/init)
   (init-http options))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (def cli-options
   (concat
-    [["-h" "--help"]]
-    exit/pid-file-options
-    db/cli-options
-    http-server/cli-options))
+   [["-h" "--help"]]
+   exit/pid-file-options
+   db/cli-options
+   http-server/cli-options))
 
 (defn main-usage [options-summary & more]
   (->> ["Madek Auth"
@@ -58,7 +54,6 @@
            (with-out-str (pprint more))
            "-------------------------------------------------------------------"])]
        flatten (clojure.string/join \newline)))
-
 
 (defn main [parent-options args]
   (info 'main [parent-options args])

@@ -1,13 +1,11 @@
 (ns madek.auth.utils.logging
   (:require
-    #?(:clj [taoensso.timbre.tools.logging])
-    [taoensso.timbre.appenders.core :as appenders]
-    [taoensso.timbre :as timbre :refer [debug info]]))
-
+   #?(:clj [taoensso.timbre.tools.logging])
+   [taoensso.timbre :as timbre :refer [debug info]]
+   [taoensso.timbre.appenders.core :as appenders]))
 
 (def LOGGING_CONFIG
-  {:min-level [[#{
-                  ;"madek.auth.*"
+  {:min-level [[#{;"madek.auth.*"
                   ;"madek.auth.http.*" 
                   ;"madek.auth.main" 
                   ;"madek.auth.resources.sign-in.auth-systems.auth-system.external.*"
@@ -15,15 +13,13 @@
                   ;"madek.auth.resources.sign-in.auth-systems.auth-system.external.sign-in"
                   ;"madek.auth.resources.sign-in.auth-systems.auth-system.password.*"
                   ;"madek.auth.utils.ring-audits"
-                  } :debug]
-               [#{
-                  #?(:clj "com.zaxxer.hikari.*")
+                  }:debug]
+               [#{#?(:clj "com.zaxxer.hikari.*")
                   "madek.*"} :info]
                [#{"*"} :warn]]
    :appenders #?(:clj {:spit (appenders/spit-appender {:fname "log/debug.log"})}
                  :cljs {})
    :log-level nil})
-
 
 (defn init
   ([] (init LOGGING_CONFIG))

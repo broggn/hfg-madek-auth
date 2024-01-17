@@ -1,9 +1,7 @@
 (ns madek.auth.http.anti-csrf.main
   (:require
-    [madek.auth.http.shared :refer [ANTI_CRSF_TOKEN_COOKIE_NAME]]
-    [goog.net.Cookies]
-    ))
-
+   [goog.net.Cookies]
+   [madek.auth.http.shared :refer [ANTI_CRSF_TOKEN_COOKIE_NAME]]))
 
 (defonce ^:dynamic *cookies* (or goog.net.cookies (.getInstance goog.net.Cookies)))
 

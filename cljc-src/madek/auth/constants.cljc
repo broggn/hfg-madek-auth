@@ -3,9 +3,7 @@
 ;(def MIN_PART_SIZE (Math/pow 1024 2))
 ;(def MAX_PART_SIZE (* 100 (Math/pow 1024 2)))
 
-
-(def MADEK_SESSION_COOKIE_NAME "madek-session") 
-
+(def MADEK_SESSION_COOKIE_NAME "madek-session")
 
 (def TAB-INDEX 100)
 

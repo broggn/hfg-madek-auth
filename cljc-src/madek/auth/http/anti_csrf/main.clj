@@ -1,11 +1,11 @@
 (ns madek.auth.http.anti-csrf.main
   (:require
-    [logbug.debug :refer [debug-ns]]
-    [madek.auth.http.shared :refer [ANTI_CRSF_TOKEN_COOKIE_NAME HTTP_UNSAFE_METHODS HTTP_SAFE_METHODS]]
-    [madek.auth.utils.core :refer [presence]]
-    [taoensso.timbre :refer [debug info warn error spy]])
+   [logbug.debug :refer [debug-ns]]
+   [madek.auth.http.shared :refer [ANTI_CRSF_TOKEN_COOKIE_NAME HTTP_UNSAFE_METHODS HTTP_SAFE_METHODS]]
+   [madek.auth.utils.core :refer [presence]]
+   [taoensso.timbre :refer [debug info warn error spy]])
   (:import
-    [java.util UUID]))
+   [java.util UUID]))
 
 (defn http-safe? [request]
   (boolean (-> request :request-method HTTP_SAFE_METHODS)))
@@ -16,7 +16,6 @@
   (-> request
       :authenticated-entity
       boolean not))
-
 
 (defn x-csrf-token! [request]
   (or (some-> request (get-in [:headers ANTI_CRSF_TOKEN_COOKIE_NAME]) presence)
@@ -49,7 +48,6 @@
 (defn wrap [handler]
   (fn [request]
     (anti-csrf-middleware handler request)))
-
 
 ;;; debug ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(debug-ns *ns*)

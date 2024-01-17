@@ -1,21 +1,20 @@
 (ns madek.auth.http.client.core
   (:refer-clojure :exclude [str keyword send-off])
   (:require
-    [cljs-http.client :as http-client]
-    [cljs-uuid-utils.core :as uuid]
-    [cljs.core.async :refer [>! <! go go-loop]]
-    [cljs.core.async :as async :refer [timeout]]
-    [clojure.pprint :refer [pprint]]
-    [clojure.string :as str]
-    [madek.auth.http.client.shared :refer [wait-component]]
-    [madek.auth.routes :refer [path]]
-    [madek.auth.state :as state :refer [state*]]
-    [madek.auth.utils.core :refer [str keyword deep-merge presence]]
-    [madek.auth.http.anti-csrf.main :as anti-csrf]
-    [madek.auth.http.shared :refer [ANTI_CRSF_TOKEN_COOKIE_NAME HTTP_SAFE_METHODS]]
-    [reagent.core :as reagent]
-    [taoensso.timbre :refer [debug error info spy warn]]
-    ))
+   [cljs-http.client :as http-client]
+   [cljs-uuid-utils.core :as uuid]
+   [cljs.core.async :as async :refer [timeout]]
+   [cljs.core.async :refer [>! <! go go-loop]]
+   [clojure.pprint :refer [pprint]]
+   [clojure.string :as str]
+   [madek.auth.http.anti-csrf.main :as anti-csrf]
+   [madek.auth.http.client.shared :refer [wait-component]]
+   [madek.auth.http.shared :refer [ANTI_CRSF_TOKEN_COOKIE_NAME HTTP_SAFE_METHODS]]
+   [madek.auth.routes :refer [path]]
+   [madek.auth.state :as state :refer [state*]]
+   [madek.auth.utils.core :refer [str keyword deep-merge presence]]
+   [reagent.core :as reagent]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 (def base-delay* (reagent/atom 0))
 
@@ -31,7 +30,7 @@
       (update :id #(uuid/uuid-string (uuid/make-random-uuid)))
       (update :method #(or % :get))
       (update :timestamp #(js/Date.))
-      (update :url (fn [url] 
+      (update :url (fn [url]
                      (or url
                          (let [{:keys [path query]} @state/routing*] (str path (when query "?") query)))))
       (update-in [:headers "accept"]
@@ -40,13 +39,13 @@
                  #(or % (anti-csrf/token)))
       (update :modal-on-response-error #(if-not (nil? %) % true))
       (as-> data
-        (update data :modal-on-request
-                #(if-not (nil? %) %
-                   (if (HTTP_SAFE_METHODS (:method data))
-                     false true)))
+            (update data :modal-on-request
+                    #(if-not (nil? %) %
+                             (if (HTTP_SAFE_METHODS (:method data))
+                               false true)))
         (update data :modal-on-response-success
                 #(if-not (nil? %) %
-                   (:modal-on-request data))))))
+                         (:modal-on-request data))))))
 
 (defn request
   ([] (request {}))
@@ -67,7 +66,6 @@
              (swap! requests* assoc-in [id :response] resp))
            (when-let [chan (:chan req)] (>! chan resp))))
      req)))
-
 
 (defn filter-success [response]
   (when (:success response) response))
@@ -91,7 +89,7 @@
         [:span.text-monospace status]]]
       [:hr]
       [:div.request
-       [:pre  (-> req :method str str/upper-case) " " (:url req)]]
+       [:pre (-> req :method str str/upper-case) " " (:url req)]]
       (when-let [body (-> resp :body presence)]
         [:div.body [:pre body]])
       [:hr]
@@ -130,13 +128,13 @@
         chan (async/chan)]
     (go-loop [do-fetch true]
              ;(info 'route-cached-fetch 'go-loop {:route route})
-             (when do-fetch
-               (let [req (request {:chan chan
-                                   :url route})
-                     resp (<! chan)]
-                 (when (< (:status resp) 300)
-                   (swap! data* assoc route (-> resp :body)))))
-             (<! (timeout (* 3 60 1000)))
-             (if (= (:route @state/routing*) route)
-               (recur reload)
-               (swap! data* dissoc route)))))
+      (when do-fetch
+        (let [req (request {:chan chan
+                            :url route})
+              resp (<! chan)]
+          (when (< (:status resp) 300)
+            (swap! data* assoc route (-> resp :body)))))
+      (<! (timeout (* 3 60 1000)))
+      (if (= (:route @state/routing*) route)
+        (recur reload)
+        (swap! data* dissoc route)))))

@@ -1,10 +1,8 @@
 (ns madek.auth.html.clipboard
   (:refer-clojure :exclude [str keyword])
   (:require
-    [madek.auth.utils.core :refer [str keyword deep-merge presence]]
-    [taoensso.timbre :refer [debug info warn error spy]]
-    ))
-
+   [madek.auth.utils.core :refer [str keyword deep-merge presence]]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 ; copy-text taken from
 ; https://github.com/metosin/komponentit/blob/master/src/cljs/komponentit/clipboard.cljs
@@ -43,7 +41,6 @@
   [:button.btn.btn-outline-secondary.btn-sm.py-0.px-1
    {:on-click #(copy-text text)}
    [:span [:i.fas.fa-clipboard]]])
-
 
 (defn button [text]
   [:button

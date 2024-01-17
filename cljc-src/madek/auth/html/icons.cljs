@@ -1,16 +1,13 @@
 (ns madek.auth.html.icons
   (:refer-clojure :exclude [next])
   (:require
-    ["@fortawesome/react-fontawesome" :as fa-react-fontawesome :refer [FontAwesomeIcon]]
-    ["@fortawesome/free-solid-svg-icons" :as fa-free-solid-svg-icons]
-    ["@fortawesome/free-brands-svg-icons" :as fa-free-brands-svg-icons]
-    ))
-
+   ["@fortawesome/free-brands-svg-icons" :as fa-free-brands-svg-icons]
+   ["@fortawesome/free-solid-svg-icons" :as fa-free-solid-svg-icons]
+   ["@fortawesome/react-fontawesome" :as fa-react-fontawesome :refer [FontAwesomeIcon]]))
 
 ;(.add fa-svg-core/import
 ;      fa-free-solid-svg-icons/faPlusSquare
 ;      fa-free-solid-svg-icons/faSync)
-
 
 (defn back [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faArrowLeftLong :className ""}))
 
@@ -18,7 +15,7 @@
 (def create add)
 (defn admin-interface [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faCog :className ""}))
 (defn alert [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faExclamationTriangle :className ""}))
-(defn inspectors [](FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faFileImport :className ""}) )
+(defn inspectors [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faFileImport :className ""}))
 (def inspector inspectors)
 (defn cancel [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faTimes :className ""}))
 (defn delete [] (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faTrashAlt :className ""}))
@@ -40,7 +37,6 @@
 (defn wait [& {:keys [size]
                :or {size "1x"}}]
   (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faCircleNotch :className "" :spin true :size size}))
-
 
 (defn previous []
   (FontAwesomeIcon #js{:icon fa-free-solid-svg-icons/faCaretLeft :className ""}))

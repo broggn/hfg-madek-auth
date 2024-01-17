@@ -1,8 +1,8 @@
 (ns madek.auth.localization
-  (:require 
-   [taoensso.timbre :refer [debug info warn error spy]]
+  (:require
    [madek.auth.state :as state]
-   [madek.auth.translations :refer [get-translation]]))
+   [madek.auth.translations :refer [get-translation]]
+   [taoensso.timbre :refer [debug info warn error spy]]))
 
 (defn- current-lang []
   (or (some-> @state/routing* :query-params :lang)

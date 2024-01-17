@@ -1,15 +1,13 @@
 (ns madek.auth.html.forms.core
   (:refer-clojure :exclude [str keyword atom])
   (:require
-    [clojure.pprint :refer [pprint]]
-    [clojure.string :as string]
-    [madek.auth.constants :as constants :refer [TAB-INDEX]]
-    [madek.auth.html.icons :as icons]
-    [madek.auth.utils.core :refer [keyword presence str]]
-    [reagent.core :as reagent :refer [atom]]
-    [taoensso.timbre :refer [debug error info spy warn]]))
-
-
+   [clojure.pprint :refer [pprint]]
+   [clojure.string :as string]
+   [madek.auth.constants :as constants :refer [TAB-INDEX]]
+   [madek.auth.html.icons :as icons]
+   [madek.auth.utils.core :refer [keyword presence str]]
+   [reagent.core :as reagent :refer [atom]]
+   [taoensso.timbre :refer [debug error info spy warn]]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -24,7 +22,6 @@
       :text (str value)
       :password (str value)
       value)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -46,7 +43,6 @@
      icon " " inner]]
    [:div.clearfix]])
 
-
 (defn save-submit-component [& args]
   [apply submit-component
    (concat [:btn-classes [:btn-warning]
@@ -64,7 +60,7 @@
                     label (last ks)
                     key (last ks)
                     pre-change identity
-                    post-change identity }}]
+                    post-change identity}}]
   [:div.form-check.form-check
    [:input.form-check-input
     {:id key
@@ -79,8 +75,8 @@
    [:label.form-check-label {:for key}
     (if (= label (last ks))
       [:strong label]
-      [:span [:strong  label] [:small " (" [:span.text-monospace (last ks)] ")"]])]
-   (when hint [:p [:small hint]]) ])
+      [:span [:strong label] [:small " (" [:span.text-monospace (last ks)] ")"]])]
+   (when hint [:p [:small hint]])])
 
 (defn input-component
   [data* ks & {:keys [label hint classes type element placeholder auto-focus?
@@ -109,9 +105,9 @@
       :placeholder placeholder
       :type type
       :value (get-in @data* ks)
-      :on-change  #(-> % .-target .-value presence
-                       (convert type)
-                       on-change (set-value data* ks) post-change)
+      :on-change #(-> % .-target .-value presence
+                      (convert type)
+                      on-change (set-value data* ks) post-change)
       :tab-index TAB-INDEX
       :disabled disabled
       :rows rows
@@ -125,11 +121,10 @@
          :on-click (fn [e]
                      (.preventDefault e)
                      (swap! data* assoc-in ks reset-default))
-         :tab-index constants/TAB-INDEX }
+         :tab-index constants/TAB-INDEX}
         [:span [icons/reset] " Reset to default"]]])]
 
    (when hint [:small.form-text hint])])
-
 
 (defn select-component
   [data* ks options &
@@ -140,11 +135,8 @@
    [:select.form-control
     {:value (get-in @data* ks "")
      :on-change #(swap! data* assoc-in ks (-> % .-target .-value))}
-    (for [[k n]  options]
-      ^{:key k} [:option {:value k} n])]
-   ])
-
-
+    (for [[k n] options]
+      ^{:key k} [:option {:value k} n])]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -159,7 +151,7 @@
         [:div.modal {:style {:display "block" :z-index 10000}}
          [:div.modal-dialog
           [:div.modal-content
-           [:div.modal-header [header] ]
+           [:div.modal-header [header]]
            [:div.modal-body
             [:form.form
              {:on-submit (fn [e]
@@ -173,12 +165,11 @@
                  [:button.btn.btn-outline-warning
                   {:type :button
                    :on-click abort-handler}
-                  [icons/cancel] " Cancel" ]
+                  [icons/cancel] " Cancel"]
                  [:button.btn.btn-outline-secondary
                   {:type :button
                    :on-click abort-handler}
-                  [icons/cancel] " Close" ])]
+                  [icons/cancel] " Close"])]
               [:div.col
-               [save-submit-component :disabled (not changed?)]
-               ]]]]]]]
+               [save-submit-component :disabled (not changed?)]]]]]]]]
         [:div.modal-backdrop {:style {:opacity "0.5"}}]])]))

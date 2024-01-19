@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Sign in /out with password'  do
 
-  before :each do 
+  before :each do
     @user = FactoryBot.create :user
   end
 
@@ -16,8 +16,8 @@ feature 'Sign in /out with password'  do
     # we are on the supplied return-to path:
     expect(uri.path).to be== '/auth/info'
 
-    expect{find("code.user-session-data")}.not_to raise_error 
-    expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error 
+    expect{find("code.user-session-data")}.not_to raise_error
+    expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error
     user_session_data = YAML.load(find("code.user-session-data").text).with_indifferent_access
     expect(user_session_data[:user_last_name]).to be== @user.last_name
     user_session_id = user_session_data[:session_id]
@@ -32,7 +32,7 @@ feature 'Sign in /out with password'  do
 
     # audits
 
-    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc
       SELECT * FROM audited_requests
       JOIN audited_responses ON audited_requests.txid = audited_responses.txid
       LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid
@@ -40,16 +40,36 @@ feature 'Sign in /out with password'  do
     SQL
 
     # sign in
-    expect(audited_records[0].with_indifferent_access[:status]).to be== 200
-    expect(audited_records[0].with_indifferent_access[:method]).to be== 'POST'
-    expect(audited_records[0].with_indifferent_access[:table_name]).to be== 'user_sessions'
-    expect(audited_records[0].with_indifferent_access[:tg_op]).to be== 'INSERT'
+
+    sign_in_record = audited_records.filter { |r| \
+      r.with_indifferent_access[:table_name] == 'user_sessions' \
+      and r.with_indifferent_access[:tg_op] == 'INSERT' }.first
+
+    expect(sign_in_record).to be
+    expect(sign_in_record.with_indifferent_access[:status]).to be== 200
+    expect(sign_in_record.with_indifferent_access[:method]).to be== 'POST'
+    expect(sign_in_record.with_indifferent_access[:table_name]).to be== 'user_sessions'
+    expect(sign_in_record.with_indifferent_access[:tg_op]).to be== 'INSERT'
+
+
+    # added to that special signed-in users group
+
+    group_users_record = audited_records.filter { |r| \
+      r.with_indifferent_access[:table_name] == 'groups_users' \
+      and r.with_indifferent_access[:tg_op] == 'INSERT' }.first
+    expect(group_users_record).to be
 
     # sign out
-    expect(audited_records[1].with_indifferent_access[:status]).to be== 204
-    expect(audited_records[1].with_indifferent_access[:method]).to be== 'POST'
-    expect(audited_records[1].with_indifferent_access[:table_name]).to be== 'user_sessions'
-    expect(audited_records[1].with_indifferent_access[:tg_op]).to be== 'DELETE'
+
+    sign_out_record = audited_records.filter{ |r| \
+      r.with_indifferent_access[:table_name] == 'user_sessions' \
+      and r.with_indifferent_access[:tg_op] == 'DELETE'}.first
+
+    expect(sign_out_record).to be
+    expect(sign_out_record.with_indifferent_access[:status]).to be== 204
+    expect(sign_out_record.with_indifferent_access[:method]).to be== 'POST'
+    expect(sign_out_record.with_indifferent_access[:table_name]).to be== 'user_sessions'
+    expect(sign_out_record.with_indifferent_access[:tg_op]).to be== 'DELETE'
 
   end
 
@@ -61,15 +81,15 @@ feature 'Sign in /out with password'  do
     click_on 'Weiter'
     fill_in :password, with: "foo"
     click_on 'Anmelden'
-    ActiveRecord::Base.connection 
+    ActiveRecord::Base.connection
     expect(page).to have_content "Unbekannte E-Mail oder falsches Passwort"
     visit '/auth/info'
-    expect{find("code.user-session-data")}.to raise_error 
+    expect{find("code.user-session-data")}.to raise_error
     expect(UserSession.all()).to be_empty
 
     # audits
 
-    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc
       SELECT * FROM audited_requests
       JOIN audited_responses ON audited_requests.txid = audited_responses.txid
       LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid

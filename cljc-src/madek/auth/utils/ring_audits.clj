@@ -36,7 +36,7 @@
   "Perstist the response, see persist-request for details."
   (-> (sql/insert-into :audited_responses)
       (sql/values [{:txid txid
-                    :status (:status response)}])
+                    :status (or (:status response) 500)}])
       (sql-format)
       (#(jdbc/execute-one! (db/get-ds) % {:return-keys true}))))
 

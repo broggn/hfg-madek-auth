@@ -23,7 +23,7 @@ $options = {
 }
 
 
-def parse 
+def parse
   OptionParser.new do |parser|
     parser.banner = "test-auth-system [options]"
 
@@ -45,10 +45,10 @@ def parse
       puts $options
       exit 0
     end
-  end.parse! 
+  end.parse!
 end
 
-parse 
+parse
 
 
 
@@ -66,9 +66,9 @@ end
 ### account ####################################################################
 
 def account_properties
-  begin 
+  begin
     YAML.load_file(PROJECT_DIR.join("tmp/ext_auth_account.yml"))
-  rescue 
+  rescue
     $logger.warn("tmp/ext_auth_account.yml does not exist, falling back to empty account")
     {}
   end
@@ -108,15 +108,6 @@ class MadekAuthService < Sinatra::Application
       success: true}, private_key, 'ES256')
 
 
-    {
-      id: "foo12345",
-      first_name: "UsersFirstName", 
-      last_name: "UsersLastName",
-      email: (email_or_login =~ /.+\@.+./) && email_or_login,
-      login: email_or_login.split('@').first,
-      groups: [{id: "group01", name: "Group 01"},
-               {id: "group02", name: "Group 02"},
-               {id: "group03", name: "Group 03"}]}
 
     url = token_data.first["sign-in-url"]
 
@@ -148,7 +139,7 @@ class MadekAuthService < Sinatra::Application
                     %em
                       #{email_or_login}
 
-          %div 
+          %div
 
             %h2 Authentication with User-Management Properties
 
@@ -161,7 +152,7 @@ class MadekAuthService < Sinatra::Application
               %li
                 %a{href: "#{url}?token=#{managed_account_success_token}"}
                   %span
-                    I am 
+                    I am
                     %em>
                       #{email_or_login}
                     %span<>

@@ -6,8 +6,8 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     ENV['TEST_AUTH_SYSTEM_PORT'] || '3167'
   end
 
-  let :ext_auth_key_pair do 
-    ECKey.new 
+  let :ext_auth_key_pair do
+    ECKey.new
   end
 
   let :ext_auth_id do
@@ -47,14 +47,14 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     click_on "Yes"
     # redirecting and full reload takes some time; somewhat dirty but more easy
     # to debug than wait_until
-    sleep(0.5) 
+    sleep(0.5)
     uri = Addressable::URI.parse(current_url)
     # we are on the supplied return-to path:
     expect(uri.path).to be== '/auth/info'
 
     # check some content:
-    expect{find("code.user-session-data")}.not_to raise_error 
-    expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error 
+    expect{find("code.user-session-data")}.not_to raise_error
+    expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error
     user_session_data = YAML.load(find("code.user-session-data").text).with_indifferent_access
     expect(user_session_data[:user_last_name]).to be== @user.last_name
     user_session_id = user_session_data[:session_id]
@@ -65,11 +65,11 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     find("form button", text: 'Abmelden').click
     expect(current_path).to be== '/'
     expect{UserSession.find(user_session_id)}.to raise_error ActiveRecord::RecordNotFound
-    
 
-    # audits 
-     
-    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+
+    # audits
+
+    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc
       SELECT * FROM audited_requests
       JOIN audited_responses ON audited_requests.txid = audited_responses.txid
       LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid
@@ -77,14 +77,23 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     SQL
 
     # request sign in
+
+    expect(audited_records[0].with_indifferent_access[:path]).to \
+      be== '/auth/sign-in/auth-systems/external/ext-test-auth-sys/request'
     expect(audited_records[0].with_indifferent_access[:status]).to be== 200
     expect(audited_records[0].with_indifferent_access[:method]).to be== 'POST'
 
-    # do sign in
-    expect(audited_records[1].with_indifferent_access[:status]).to be== 200
-    expect(audited_records[1].with_indifferent_access[:method]).to be== 'POST'
-    expect(audited_records[1].with_indifferent_access[:table_name]).to be== 'user_sessions'
-    expect(audited_records[1].with_indifferent_access[:tg_op]).to be== 'INSERT'
+
+    # so sign in
+    sign_in_record = audited_records.filter { |r| \
+      r.with_indifferent_access[:table_name] == 'user_sessions' \
+      and r.with_indifferent_access[:tg_op] == 'INSERT' }.first
+
+    expect(sign_in_record).to be
+    expect(sign_in_record.with_indifferent_access[:status]).to be== 200
+    expect(sign_in_record.with_indifferent_access[:method]).to be== 'POST'
+    expect(sign_in_record.with_indifferent_access[:table_name]).to be== 'user_sessions'
+    expect(sign_in_record.with_indifferent_access[:tg_op]).to be== 'INSERT'
 
 
 
@@ -104,9 +113,9 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     # return-to should be preserved during this process:
     expect(uri.query).to be== 'return-to=%2Fauth%2Finfo'
 
-    # audits 
-     
-    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+    # audits
+
+    audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc
       SELECT * FROM audited_requests
       JOIN audited_responses ON audited_requests.txid = audited_responses.txid
       LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid
@@ -118,8 +127,9 @@ feature 'Sign in / sign out via ext auth', ci_group: :extauth do
     expect(audited_records[0].with_indifferent_access[:method]).to be== 'POST'
 
     # do sign in
-    expect(audited_records[1].with_indifferent_access[:status]).to be== 401 
+    expect(audited_records[1].with_indifferent_access[:status]).to be== 401
     expect(audited_records[1].with_indifferent_access[:method]).to be== 'POST'
+
 
 
   end

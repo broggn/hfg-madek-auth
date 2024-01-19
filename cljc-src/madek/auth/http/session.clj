@@ -6,7 +6,7 @@
    [honey.sql :refer [format] :rename {format sql-format}]
    [honey.sql.helpers :as sql]
    [logbug.debug :refer [debug-ns]]
-   [madek.auth.constants :refer [MADEK_SESSION_COOKIE_NAME]]
+   [madek.auth.constants :refer [MADEK_SESSION_COOKIE_NAME MADEK_SIGNED_IN_USERS_GROUP]]
    [madek.auth.utils.core :refer [presence presence!]]
    [next.jdbc :as jdbc]
    [taoensso.timbre :refer [debug error info spy warn]])
@@ -29,6 +29,29 @@
         :meta_data [:lift {:user_agent (get-in request [:headers "user-agent"])
                            :remote_addr (get-in request [:remote-addr])}]})))
 
+(defn ensure-default-madek-signed-in-group-exists [tx]
+  (let [group-id (UUID/fromString (:id MADEK_SIGNED_IN_USERS_GROUP))]
+    (when-not (-> (sql/select true)
+                  (sql/from :groups)
+                  (sql/where [:= :id group-id])
+                  (sql-format)
+                  (#(jdbc/execute-one! tx %)))
+      (-> (sql/insert-into :groups)
+          (sql/values [(update-in MADEK_SIGNED_IN_USERS_GROUP
+                                  [:id] #(UUID/fromString %))])
+          (sql-format)
+          (#(jdbc/execute-one! tx %))))))
+
+(defn add-to-standard-authentication-group [{user-id :user_id :as user-session} tx]
+  (let [group-id (UUID/fromString (:id MADEK_SIGNED_IN_USERS_GROUP))]
+    (ensure-default-madek-signed-in-group-exists tx)
+    (-> (sql/insert-into :groups_users)
+        (sql/values [{:user_id user-id :group_id group-id}])
+        (sql/upsert (-> (sql/on-conflict :user_id :group_id)
+                        (sql/do-nothing)))
+        (sql-format)
+        (#(jdbc/execute-one! tx %)))))
+
 (defn create-user-session-response
   [user-auth-system {tx :tx :as request}]
   "Create and returns the user_session. The map includes additionally
@@ -39,6 +62,7 @@
                                                     token request)])
                          (sql-format)
                          (#(jdbc/execute-one! tx % {:return-keys true})))]
+    (add-to-standard-authentication-group user-session tx)
     (assoc user-session :token token)
     {:status 200
      :body {:user_session user-session}
@@ -89,6 +113,7 @@
   (if-let [user-session (some-> request
                                 session-token-hashed
                                 (user-session tx))]
+
     (assoc request :authenticated-entity user-session)
     request))
 

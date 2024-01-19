@@ -41,7 +41,7 @@
 ;;; token and claims validation ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn validate-request-claims!
-  "Check that the request token is not expired. 
+  "Check that the request token is not expired.
   At a later point possibly also validate to a nonce."
   [sign-in-request-token internal-pub-key]
   (jwt/unsign sign-in-request-token internal-pub-key {:alg :es256}))

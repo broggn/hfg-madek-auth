@@ -54,7 +54,7 @@
        :body (merge {}
                     (select-keys auth-system [:external_sign_in_url])
                     {:token token})})
-    {:status 402}))
+    (throw (ex-info "No suiteable authentication system found" {:status 422}))))
 
 ;;; debug ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(debug-ns *ns*)

@@ -6,8 +6,8 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
     ENV['TEST_AUTH_SYSTEM_PORT'] || '3167'
   end
 
-  let :ext_auth_key_pair do 
-    ECKey.new 
+  let :ext_auth_key_pair do
+    ECKey.new
   end
 
   let :ext_auth_id do
@@ -20,33 +20,33 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
 
   before :each do
 
-    @domain = Faker::Internet.domain_name 
+    @domain = Faker::Internet.domain_name
     @first_name = Faker::Name.first_name
     @last_name = Faker::Name.last_name
     @institutional_id = Faker::Internet.uuid
     @login = (@last_name + @first_name).downcase.gsub(/[^a-z]/,'').truncate(8, omission: '')
     @email = @first_name + " " + @last_name + "@" + @domain
 
-    File.write(PROJECT_DIR.join("tmp/ext_auth_account.yml"), 
+    File.write(PROJECT_DIR.join("tmp/ext_auth_account.yml"),
                { email: @email,
                  first_name: @first_name,
                  id: @institutional_id,
                  last_name: @last_name,
                  login: @login,
                  groups: [
-                   {id: "g001",
+                   {institutional_id: "g001",
                     name: "Group g001",
                     type: 'InstitutionalGroup',
                     institutional_name: "Inst Grp g001"},
-                    {id: "g002",
+                    {institutional_id: "g002",
                      name: "Group g002",
                      type: 'InstitutionalGroup',
                      institutional_name: "Inst Grp g002"},
-                     {id: "g003",
+                     {institutional_id: "g003",
                       name: "Group g003",
                       type: 'InstitutionalGroup',
                       institutional_name: "Inst Grp g003"},
-                      {id: "all",
+                      {institutional_id: "all",
                        name: "All users from this auth system",
                        type: 'AuthenticationGroup' }
                  ]
@@ -66,7 +66,7 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
     File.write(PROJECT_DIR.join('./tmp/private_key.pem'), ext_auth_key_pair.private_key)
     File.write(PROJECT_DIR.join('./tmp/public_key.pem'), @auth_system.internal_public_key)
 
-    
+
 
   end
 
@@ -83,7 +83,7 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
 
     # redirecting and full reload takes some time; somewhat dirty but more easy
     # to debug than wait_until
-    sleep(0.5) 
+    sleep(0.5)
     uri = Addressable::URI.parse(current_url)
     # we are on the supplied return-to path:
     expect(uri.path).to be== '/auth/info'
@@ -96,8 +96,8 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
     expect(@user.first_name).not_to be_empty
 
     # check some content:
-    expect{find("code.user-session-data")}.not_to raise_error 
-    expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error 
+    expect{find("code.user-session-data")}.not_to raise_error
+    expect{YAML.load(find("code.user-session-data").text)}.not_to raise_error
     user_session_data = YAML.load(find("code.user-session-data").text).with_indifferent_access
     expect(user_session_data[:user_last_name]).to be== @user.last_name
     expect(user_session_data[:user_first_name]).to be== @user.first_name
@@ -119,7 +119,7 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
   context 'Update account and sign-in' do
 
     before :each do
-      @user = FactoryBot.create :user, 
+      @user = FactoryBot.create :user,
         institutional_id: @institutional_id,
         institution: @domain
 
@@ -144,7 +144,7 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
 
       # redirecting and full reload takes some time; somewhat dirty but more easy
       # to debug than wait_until
-      sleep(0.5) 
+      sleep(0.5)
       uri = Addressable::URI.parse(current_url)
       # we are on the supplied return-to path:
       expect(uri.path).to be== '/auth/info'
@@ -178,17 +178,18 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
 
       # redirecting and full reload takes some time; somewhat dirty but more easy
       # to debug than wait_until
-      sleep(0.5) 
+      sleep(0.5)
       uri = Addressable::URI.parse(current_url)
       # we are on the supplied return-to path:
       expect(uri.path).to be== '/auth/info'
 
-      expect(@user.reload.groups.reload.map(&:id).count).to be== 4
+      # the four we created plus the special madek group
+      expect(@user.reload.groups.reload.map(&:id).count).to be== 5
 
 
-      # audits 
+      # audits
 
-      audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc 
+      audited_records = ActiveRecord::Base.connection.execute <<-SQL.strip_heredoc
         SELECT * FROM audited_requests
         JOIN audited_responses ON audited_requests.txid = audited_responses.txid
         LEFT JOIN audited_changes ON audited_changes.txid = audited_requests.txid

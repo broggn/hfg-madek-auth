@@ -10,6 +10,7 @@
    [madek.auth.resources.sign-in.auth-systems.auth-system.external.pki :refer [private-key! public-key!]]
    [madek.auth.resources.sign-in.auth-systems.sql :refer [auth-systems-query]]
    [madek.auth.routes :refer [path]]
+   [madek.auth.state :as state]
    [madek.auth.utils.core :refer [presence]]
    [next.jdbc :as jdbc]
    [taoensso.timbre :refer [debug error info spy warn]]
@@ -42,7 +43,9 @@
                             email-or-login auth_system_id)
                            (sql-format :inline false)
                            (#(jdbc/execute-one! tx %)))]
-    (let [priv-key (-> auth-system :internal_private_key private-key!)
+    (let [priv-key (private-key!
+                    (:internal_private_key auth-system)
+                    (get @state/passwords* (keyword auth_system_id)))
           sign-in-url (str base-url
                            (path :sign-in-user-auth-system-sign-in
                                  (select-keys auth-system

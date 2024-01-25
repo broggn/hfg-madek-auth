@@ -9,7 +9,7 @@
    [madek.auth.db.core :refer [get-ds]]
    [madek.auth.http.session :refer [create-user-session-response]]
    [madek.auth.resources.sign-in.auth-systems.auth-system.external.manage :refer [manage-account]]
-   [madek.auth.resources.sign-in.auth-systems.auth-system.external.pki :refer [private-key! public-key!]]
+   [madek.auth.resources.sign-in.auth-systems.auth-system.external.pki :refer [public-key!]]
    [madek.auth.resources.sign-in.auth-systems.sql :refer [auth-systems-query]]
    [madek.auth.routes :refer [path]]
    [madek.auth.utils.core :refer [presence]]

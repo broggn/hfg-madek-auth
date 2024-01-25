@@ -4,6 +4,28 @@ Madek-AUTH
 Authentication service for Madek.
 
 
+## AuthSystem PKI
+
+To generate a key pair:
+
+    openssl ecparam -name prime256v1 -genkey -noout -out tmp/key.pem
+    openssl ec -in tmp/key.pem -pubout -out tmp/public.pem
+
+
+### Passphrase Protected Keys
+
+Optionally protecd the private key with a password:
+
+    openssl ec -in tmp/key.pem -out key-protected.pem -aes256 -passin 'pass:MYSECRET'
+
+
+The server takes an optional argument '--passwords-path' to a YAML encode file
+with pairs of key and password. The key must be **equal to id** of the
+authentication-system.
+
+
+
+
 
 
 ## Development

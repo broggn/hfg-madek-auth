@@ -5,6 +5,7 @@
    [madek.auth.db.core :as db]
    [madek.auth.http.server :as http-server]
    [madek.auth.routing.main :as routing]
+   [madek.auth.state :as state]
    [madek.auth.utils.exit :as exit]
    [taoensso.timbre :refer [debug error info spy warn]]))
 
@@ -22,7 +23,7 @@
   (info "run with options:" (str options))
   (exit/init options)
   (.addShutdownHook (Runtime/getRuntime) (Thread. #(shutdown)))
-  ;(state/init)
+  (state/init options)
   ;(init-shutdown options)
   (db/init options)
   ;(settings/init)
@@ -35,6 +36,7 @@
    [["-h" "--help"]]
    exit/pid-file-options
    db/cli-options
+   state/cli-options
    http-server/cli-options))
 
 (defn main-usage [options-summary & more]

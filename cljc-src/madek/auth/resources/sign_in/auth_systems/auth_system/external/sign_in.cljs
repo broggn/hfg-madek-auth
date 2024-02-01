@@ -1,18 +1,14 @@
 (ns madek.auth.resources.sign-in.auth-systems.auth-system.external.sign-in
-  (:require
-   [cljs.core.async :refer [go go-loop]]
-   [cljs.pprint :refer [pprint]]
-   [lambdaisland.uri :as uri]
-   [madek.auth.html.forms.core :as forms]
-   [madek.auth.html.icons :as icons]
-   [madek.auth.http.client.core :as http-client]
-   [madek.auth.localization :refer [translate]]
-   [madek.auth.routes :refer [navigate! path]]
-   [madek.auth.state :as state :refer [debug?* hidden-routing-state-component]]
-   [madek.auth.utils.core :refer [presence]]
-   [madek.auth.utils.json :as json]
-   [reagent.core :as reagent :refer [reaction] :rename {atom ratom}]
-   [taoensso.timbre :refer [debug error info spy warn]]))
+  (:require [cljs.core.async :refer [go]]
+            [cljs.pprint :refer [pprint]]
+            [madek.auth.html.icons :as icons]
+            [madek.auth.http.client.core :as http-client]
+            [madek.auth.localization :refer [translate]]
+            [madek.auth.routes :refer [navigate! path]]
+            [madek.auth.state :as state :refer [debug?*
+                                                hidden-routing-state-component]]
+            [reagent.core :as reagent :rename {atom ratom}]
+            [taoensso.timbre :refer [warn]]))
 
 (defonce data* (ratom nil))
 
@@ -27,6 +23,7 @@
 (defn sign-in []
   (go (some->
        {:modal-on-response-error false
+        :modal-on-request false
         :json-params (-> @state/routing* :query-params)
         :method :post
         :url (path (:name @state/routing*)
@@ -49,7 +46,7 @@
     [:p [:strong "Authentication failed"]]
     [:<> (if-let [msg (some->> @data* :body :error_message)]
            [:p msg]
-           [:p "The authentication system did not return any indication why the authrizaion failed. "])]
+           [:p "The authentication system did not return any indication why the authorization failed. "])]
     [:hr]
     [:p "You can try again or contact your support for help."]]
    [:div.d-flex.mb-3
@@ -63,19 +60,18 @@
 (defn success-component []
   [:d
    [:div.alert.alert-success
-    [:p [:strong "Authentication succeeded"]]]])
+    [:p (translate :ext-callback-success)]]])
 
 (defn page []
   [:div.page
    [hidden-routing-state-component
     :did-change sign-in]
-   [:h1.text-center "Sign-in: validating authorization"]
    [:<> (cond
           (some-> @data*
                   :status (#(> % 300))) [fail-component]
           (some-> @data*
                   :status (#(< % 300))) [success-component]
-          :else [:div.placeholder])]
+          :else [:div.placeholder (translate :ext-callback-processing)])]
 
    [page-debug]])
 

@@ -17,6 +17,7 @@
   lambdaisland/uri {:mvn/version "1.15.125"}
   logbug/logbug {:mvn/version "5.0.0"}
   metosin/reitit {:mvn/version "0.6.0"}
+  noencore/noencore {:mvn/version "0.3.7"} ; (transitive dependency of cljs-http; enforce new version to avoid :redef warnings)
   nrepl/nrepl {:mvn/version "1.0.0"}
   org.clojure/core.memoize {:mvn/version "1.0.257"}
   org.clojure/tools.cli {:mvn/version "1.0.219"}

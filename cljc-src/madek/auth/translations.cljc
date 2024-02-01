@@ -41,7 +41,14 @@
    :step3-change-username-label ["Andere E-Mail"
                                  "Other email"]
    :step3-submit-label ["Anmelden"
-                        "Log in"]})
+                        "Log in"]
+
+   :ext-redirecting ["Automatische Weiterleitung..."
+                     "Redirecting..."]
+   :ext-callback-processing ["..."
+                             "..."]
+   :ext-callback-success ["Login erfolgreich, Weiterleitung zum Medienarchiv..."
+                          "Login successful, redirecting back to media archive..."]})
 
 (defn get-translation [key lang]
   (let [translations (or (-> translations key seq) [(str "[Missing: " key "]")])

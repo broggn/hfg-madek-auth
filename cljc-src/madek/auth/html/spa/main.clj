@@ -36,7 +36,7 @@
           [:body {:data-user (-> user json/to-json url/encode)
                   :data-settings (-> settings json/to-json url/encode)}
            [:div#app {:class "full-height-container"}
-            [:div.loading-screen
+            [:div.loading-screen.show-after-400ms
              [:h1 "Madek Authentication Service"]
              [:p "Loading application ..."]]]]
           js-includes)})

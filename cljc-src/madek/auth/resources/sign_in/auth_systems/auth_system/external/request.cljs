@@ -1,18 +1,14 @@
 (ns madek.auth.resources.sign-in.auth-systems.auth-system.external.request
-  (:require
-   [cljs.core.async :refer [go go-loop]]
-   [cljs.pprint :refer [pprint]]
-   [lambdaisland.uri :as uri]
-   [madek.auth.html.forms.core :as forms]
-   [madek.auth.html.icons :as icons]
-   [madek.auth.http.client.core :as http-client]
-   [madek.auth.localization :refer [translate]]
-   [madek.auth.routes :refer [navigate! path]]
-   [madek.auth.state :as state :refer [debug?* hidden-routing-state-component]]
-   [madek.auth.utils.core :refer [presence]]
-   [madek.auth.utils.json :as json]
-   [reagent.core :as reagent :refer [reaction] :rename {atom ratom}]
-   [taoensso.timbre :refer [debug error info spy warn]]))
+  (:require [cljs.core.async :refer [go <!]]
+            [cljs.pprint :refer [pprint]]
+            [lambdaisland.uri :as uri]
+            [madek.auth.http.client.core :as http-client]
+            [madek.auth.localization :refer [translate]]
+            [madek.auth.routes :refer [navigate!]]
+            [madek.auth.state :as state :refer [debug?*
+                                                hidden-routing-state-component]]
+            [reagent.core :as reagent :rename {atom ratom}]
+            [taoensso.timbre :refer [debug]]))
 
 (defn current-uri []
   (uri/uri (.. js/window -location)))
@@ -39,7 +35,8 @@
 (defn request []
   (go (some->
        {:method :post
-        :json-params (req-data)}
+        :json-params (req-data)
+        :modal-on-request false}
        http-client/request :chan <!
        http-client/filter-success :body
        continue)))
@@ -57,7 +54,7 @@
   [:div.page
    [hidden-routing-state-component
     :did-change request]
-   [:h1.text-center "Sign-in: processing request"]
+   [:h1.text-center (translate :ext-redirecting)]
    [page-debug]])
 
 (def components

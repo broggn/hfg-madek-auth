@@ -52,6 +52,13 @@
         (sql-format)
         (#(jdbc/execute-one! tx %)))))
 
+(defn update-last-signed-in-at [{user-id :user_id} tx]
+  (-> (sql/update :users)
+      (sql/set {:last_signed_in_at [:now]})
+      (sql/where [:= :id user-id])
+      (sql-format)
+      (#(jdbc/execute-one! tx %))))
+
 (defn create-user-session-response
   [user-auth-system {tx :tx :as request}]
   "Create and returns the user_session. The map includes additionally
@@ -63,7 +70,7 @@
                          (sql-format)
                          (#(jdbc/execute-one! tx % {:return-keys true})))]
     (add-to-standard-authentication-group user-session tx)
-    (assoc user-session :token token)
+    (update-last-signed-in-at user-session tx)
     {:status 200
      :body {:user_session user-session}
      :cookies {MADEK_SESSION_COOKIE_NAME

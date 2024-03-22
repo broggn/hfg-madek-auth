@@ -4,6 +4,7 @@
    [logbug.debug :refer [debug-ns]]
    [madek.auth.resources.sign-in.auth-systems.auth-system.external.request :as sign-in-user-auth-system-external-request]
    [madek.auth.resources.sign-in.auth-systems.auth-system.external.sign-in :as sign-in-user-auth-system-external-sign-in]
+   [madek.auth.resources.sign-in.auth-systems.auth-system.ldap.sign-in :as sign-in-user-auth-system-ldap-sign-in]
    [madek.auth.resources.sign-in.auth-systems.auth-system.password.request :as sign-in-user-auth-system-password-request]
    [madek.auth.resources.sign-in.auth-systems.auth-system.password.sign-in :as sign-in-user-auth-system-password-sign-in]
    [madek.auth.resources.sign-in.auth-systems.main :as sign-in-user-auth-systems]
@@ -22,6 +23,7 @@
                                         (warn "No matching :auth_system_type" (:auth_system_type path-params)))
     :sign-in-user-auth-system-sign-in (case (:auth_system_type path-params)
                                         "external" #'sign-in-user-auth-system-external-sign-in/handler
+                                        "ldap" #'sign-in-user-auth-system-ldap-sign-in/handler
                                         "password" #'sign-in-user-auth-system-password-sign-in/handler
                                         (warn "No matching :auth_system_type" (:auth_system_type path-params)))
     :sign-out sign-out/handler))

@@ -18,6 +18,7 @@
     :sign-in-user-auth-systems sign-in-auth-systems/components
     :sign-in-user-auth-system-request (case (get-in match [:path-params :auth_system_type])
                                         "external" sign-in-auth-system-external-request/components
+                                        "ldap" sign-in-auth-system-password-request/components
                                         "password" sign-in-auth-system-password-request/components)
     :sign-in-user-auth-system-sign-in (case (get-in match [:path-params :auth_system_type])
                                         "external" sign-in-auth-system-external-sign-in/components)))

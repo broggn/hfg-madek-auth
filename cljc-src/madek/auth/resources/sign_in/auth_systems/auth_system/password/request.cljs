@@ -114,7 +114,7 @@
    [:div.card-page__head [:h1 (translate :login-box-title)]]
    [:div.card-page__body {:style {:min-height "20em"}}
     [:<>
-     [:h2.form-row (-> @auth-system* :auth_system_name (or "\u00A0"))]
+     ;[:h2.form-row (-> @auth-system* :auth_system_name (or "\u00A0"))]
      [form]]]
    [page-debug]])
 

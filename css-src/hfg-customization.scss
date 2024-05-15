@@ -1,0 +1,263 @@
+/*
+* Custom Stylesheet for Madek User Interface (WebApp)
+* Copyright (C) 2024 HfG Karlsruhe
+* Author: Hannes Herold <hherold@hfg-karlsruhe.de>
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License version 3 as published by
+* the Free Software Foundation.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details: 
+* <https://www.gnu.org/licenses/gpl-3.0.html>
+*/
+
+/*
+* This minimal variant only attempts to remove the shadows and background patterns.
+* Also, Sets are shaped round to visually distinguish them from Media Entries.
+*/
+
+:root {
+  --white: #FFFFFF;
+  --text: #4c4c4c;
+  /* --primary: rgb(244, 125, 46); */
+  /* --primary: rgb(255, 113, 61); */
+  /* --primary: rgb(18, 160, 96); */
+  --primary: #7a9d29;
+  --status-green: SeaGreen;
+  --status-blue: SlateBlue;
+  --status-red: MediumVioletRed;
+}
+
+
+/* MAKE IT FLAT */
+html *:not(.header-brand__logo), 
+html *:after, 
+html *:before {
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: initial !important;
+}
+
+
+
+/* NO BORDERS */
+*.bordered,
+*.bordered-right,
+*.bordered-left,
+.separated,
+.separator,
+.ui-side-filter,
+.ui-tabs-item a,
+.ui-media-overview-preview,
+.ui-header,
+td {
+  border: none !important;
+  outline: none !important;
+}
+.ui-drop-menu {
+  border: 1px solid #ccc !important;
+}
+
+
+
+
+/* TABS*/
+.app-body-ui-container .ui-tabs-item a {
+  background-color: #dddddd;
+  margin-bottom: 1px;
+}
+.app-body-ui-container .ui-tabs-item:hover a {
+  background-color: var(--white) !important;
+}
+.app-body-ui-container .ui-tabs-item.active a {
+  background-color: var(--white) !important;
+  color: var(--text);
+}
+
+
+
+
+/* BUTTONS */
+.primary-button,
+.tertiary-button {
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+}
+.primary-button:hover,
+.tertiary-button:hover {
+  background-color: var(--text);
+}
+.tertiary-button:hover {
+  border: none;
+}
+
+
+
+
+/* TAGS */
+a.ui-tag-button,
+a.ui-tag-button:visited {
+  background-color: var(--white);
+  color: var(--text);
+}
+.ui-tag-button:hover,
+a.ui-tag-button:visited:hover {
+  background-color: var(--white);
+  border-color: var(--primary);
+}
+
+
+
+
+/* THUMBNAILS */
+/* basic styles */
+.ui-thumbnail-image-wrapper,
+.ui-featured-entry,
+.ui-level-image-wrapper {
+  overflow: hidden;
+  padding: 0;
+  background-color: var(--white);
+  border-radius: var(--soft-corners);
+}
+/* media entries */
+/* position image at top of square */
+.media-entry .ui-thumbnail-image-holder {
+  height: auto !important;
+  width: auto !important;
+  top: 0 !important;
+}
+/* make image fill the whole square */
+.media-entry .ui-thumbnail-image {
+  max-width: initial !important;
+  max-height: initial !important;
+  object-fit: cover;
+  width: 130px;
+  height: 130px;
+}
+/* sets */
+/* make them round */
+.media-set .ui-thumbnail-image-wrapper,
+.ui-level-image-wrapper {
+  border-radius: 50%;
+}
+/* make image fill the whole circle */
+.media-set .ui-thumbnail-image {
+  max-width: initial !important;
+  max-height: initial !important;
+  object-fit: cover;
+  width: 130px;
+  height: 130px;
+}
+/* ICONS */
+.ui-thumbnail-privacy {
+  border: none;
+  border-radius: 50%;
+  left: .7em !important;
+  top: .7em !important;
+}
+.ui-thumbnail-meta-extension {
+  border: none !important;
+}
+/* Subtitles Accessibility */
+.ui-thumbnail-meta-subtitle {
+  color: var(--text);
+  line-height: 1.2em;
+  height: 28px !important;
+  margin-top: .25em;
+}
+
+
+
+
+
+/* MY Sidebar*/
+
+.ui-side-navigation-item a {
+  line-height: 1.2em;
+  margin-bottom: .75em;
+}
+
+
+
+/* SUCHE */
+
+#app[data-view="search"] .ui-container.midtone::before {
+  display: block;
+  width: 400px;
+  margin: 0 auto;
+  margin-bottom: -10em;
+  padding-top: 2em;
+  content: "Einfache Suche Ã¼ber Madek-Textfelder. Keywords und Personen werden NICHT durchsucht, Operatoren (Plus, AnfÃ¼hrungszeichen usw.) werden nicht unterstÃ¼tzt. \A\A Wir empfehlen eine sehr allgemeine Suche (ggf. Suchfeld leer lassen). Die Ergebnisse kÃ¶nnen dann auf der nÃ¤chsten Seite mit Filtern detailliert eingeschrÃ¤nkt werden.";
+  white-space: pre-wrap;
+}
+#app[data-view="search"] .ui-container.midtone::after {
+  display: block;
+  width: 400px;
+  margin: 0 auto;
+  margin-top: -10em;
+  padding-bottom: 2em;
+  content: "Simple search over Madek text fields. Keywords and persons will NOT be searched, operators (plus, quotes, etc.) are not supported. \A\A We recommend a very general search (or even leaving the search field empty). Results can be narrowed down in detail with filters on the next page.";
+  white-space: pre-wrap;
+}
+#app[data-view="search"] .ui-search div {
+  display: none;
+}
+
+
+
+
+/* IMPORT MEDIA */
+#app[data-action="new"] .ui-form-group h3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#app[data-action="new"] .ui-form-group h3 label {
+  display: block;
+  width: fit-content;
+  margin-top: 1em;
+}
+
+
+
+/* alerts */
+.ui-alert.success {
+  background-color: var(--status-green);
+}
+.ui-alert.confirmation {
+  background-color: var(--status-blue);
+}
+.ui-alert.error {
+  background-color: var(--status-red);
+}
+
+
+/* ADMIN MODE */
+body[data-uberadmin] {
+  border: none;
+}
+body[data-uberadmin] #app {
+  border: 1.5em solid var(--status-blue);
+}
+
+
+/* SECTION LABELS */
+/* currently disabled */
+.section-labels {
+  display: none;
+}
+
+.header-brand__logo {
+  background-size: auto 9px;
+  width: 55px;
+  margin-right: 10px;
+  background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+Cjxzdmcgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDIyNSA4MCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxuczpzZXJpZj0iaHR0cDovL3d3dy5zZXJpZi5jb20vIiBzdHlsZT0iZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjI7Ij4KICAgIDxnIGlkPSJwYXRoMTk2NiIgdHJhbnNmb3JtPSJtYXRyaXgoMy41NDMzMWUtMDUsMCwwLDMuNTQzMzFlLTA1LC0zNTkuOTA1LC0xNy45NjAzKSI+CiAgICAgICAgPHBhdGggZD0iTTEuNjE4MzJlKzA3LDUwNjg4MEwxLjUzNjRlKzA3LDIuMTgwMzhlKzA2TDEuNTY4ODZlKzA3LDIuMTgwMzhlKzA2TDEuNjVlKzA3LDUwNzQwMEwxLjY1ZSswNyw1MDY4ODBMMS42MTgzMmUrMDcsNTA2ODgwWk0xLjQ0NDc0ZSswNyw1MDY4ODBMMS4zNjI4N2UrMDcsMi4xODAzOGUrMDZMMS4zODgwOWUrMDcsMi4xODAzOGUrMDZMMS40NjkyM2UrMDcsNTA2ODgwTDEuNDQ0NzRlKzA3LDUwNjg4MFpNMS4xODQzNmUrMDcsNTA2ODgwTDEuMTAyNDllKzA3LDIuMTgwMzhlKzA2TDEuMTI3NzFlKzA3LDIuMTgwMzhlKzA2TDEuMjA4OWUrMDcsNTA2ODgwTDEuMTg0MzZlKzA3LDUwNjg4MFpNMS4wOTc2MWUrMDcsNTA2ODgwTDEuMDE1NzNlKzA3LDIuMTgwMzhlKzA2TDEuMDQwOTZlKzA3LDIuMTgwMzhlKzA2TDEuMTIyMWUrMDcsNTA2ODgwTDEuMDk3NjFlKzA3LDUwNjg4MFpNMS4zMzA2MmUrMDcsMS4wNjYwNmUrMDZMMS4yNDg3MmUrMDcsMi43MzkzZSswNkwxLjI3Mzk2ZSswNywyLjczOTNlKzA2TDEuMzU1MTJlKzA3LDEuMDY2MDZlKzA2TDEuMzMwNjJlKzA3LDEuMDY2MDZlKzA2Wk0xLjUwNDE3ZSswNywxLjA2NjA2ZSswNkwxLjQyMjI3ZSswNywyLjczOTNlKzA2TDEuNDQ3NDllKzA3LDIuNzM5M2UrMDZMMS41Mjg2NmUrMDcsMS4wNjYwNmUrMDZMMS41MDQxN2UrMDcsMS4wNjYwNmUrMDZaTTEuMjQzODFlKzA3LDEuMDY2MDZlKzA2TDEuMTYxOTRlKzA3LDIuNzM5M2UrMDZMMS4xODcxNmUrMDcsMi43MzkzZSswNkwxLjI2ODMzZSswNywxLjA2NjA2ZSswNkwxLjI0MzgxZSswNywxLjA2NjA2ZSswNloiIHN0eWxlPSJmaWxsOndoaXRlOyIvPgogICAgPC9nPgo8L3N2Zz4K");
+}
+
+.header {
+  border: none;
+}

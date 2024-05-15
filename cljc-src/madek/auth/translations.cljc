@@ -10,7 +10,7 @@
    :user-menu-sign-out ["Abmelden"
                         "Log out"]
 
-   :login-box-title ["Medienarchiv-Login" "Media Archive Login"]
+   :login-box-title ["Login" "Login"]
 
    :step1-username-label ["E-Mail"
                           "Email"]
@@ -79,8 +79,8 @@
                      "Redirecting..."]
    :ext-callback-processing ["..."
                              "..."]
-   :ext-callback-success ["Login erfolgreich, Weiterleitung zum Medienarchiv..."
-                          "Login successful, redirecting back to media archive..."]})
+   :ext-callback-success ["Login erfolgreich, Weiterleitung zum Archiv..."
+                          "Login successful, redirecting back to archive..."]})
 
 (defn get-translation [key lang]
   (let [translations (or (-> translations key seq) [(str "[Missing: " key "]")])

@@ -6,6 +6,7 @@
    [madek.auth.db.settings :as settings]
    [madek.auth.http.server :as http-server]
    [madek.auth.routing.main :as routing]
+   [madek.auth.resources.sign-in.auth-systems.auth-system.ldap.ldap :as ldap]
    [madek.auth.state :as state]
    [madek.auth.utils.exit :as exit]
    [taoensso.timbre :refer [debug error info spy warn]]))
@@ -27,7 +28,7 @@
   (state/init options)
   ;(init-shutdown options)
   (db/init options)
-  (settings/init)
+  (ldap/init options)
   ;(settings/init)
   (init-http options))
 
@@ -38,6 +39,7 @@
    [["-h" "--help"]]
    exit/pid-file-options
    db/cli-options
+   ldap/cli-options
    state/cli-options
    http-server/cli-options))
 

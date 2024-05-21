@@ -109,6 +109,7 @@ GEM
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     jwt (2.7.0)
+    liquid (5.5.0)
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -197,7 +198,8 @@ GEM
     regexp_parser (2.8.0)
     rerun (0.14.0)
       listen (~> 3.0)
-    rexml (3.2.5)
+    rexml (3.2.8)
+      strscan (>= 3.0.9)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -238,6 +240,7 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     strong_password (0.0.10)
+    strscan (3.1.0)
     temple (0.10.0)
     textacular (5.5.1)
       activerecord (>= 5.0, < 7.1)
@@ -274,6 +277,7 @@ DEPENDENCIES
   faker
   haml
   jwt
+  liquid
   listen
   mimemagic
   pg

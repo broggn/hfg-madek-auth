@@ -18,8 +18,6 @@
                [#{#?(:clj "com.zaxxer.hikari.*")
                   "madek.*"} :info]
                [#{"*"} :warn]]
-   :appenders #?(:clj {:spit (appenders/spit-appender {:fname "log/debug.log"})}
-                 :cljs {})
    :log-level nil})
 
 (defn init

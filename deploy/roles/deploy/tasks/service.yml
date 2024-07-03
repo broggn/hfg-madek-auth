@@ -1,0 +1,28 @@
+- name: install service from template
+  template:
+    src: madek-auth.service
+    dest: /etc/systemd/system/madek-auth.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+  failed_when: false
+
+- name: (re)start auth-service
+  service:
+    enabled: yes
+    name: madek-auth
+    state: restarted
+  register: auth_service_details
+  until: auth_service_details.status.ActiveState == "active"
+  retries: 3
+  delay: 15
+
+- name: wait for service to be active
+  wait_for:
+    port: '{{madek_auth_port}}'
+    delay: 5
+    timeout: 60

@@ -1,3 +1,0 @@
-- name: echo
-  debug:
-    msg: "Hello, World!"

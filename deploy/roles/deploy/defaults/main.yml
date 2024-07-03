@@ -1,0 +1,3 @@
+madek_auth_dir: /madek/server/auth
+madek_auth_user: madek-auth
+madek_auth_service_xmx: 256

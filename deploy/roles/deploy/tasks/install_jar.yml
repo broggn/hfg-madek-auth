@@ -1,0 +1,12 @@
+- name: apt unzip
+  apt:
+    name: unzip
+    state: present
+
+- name: copy jar
+  copy:
+    src: "{{role_path}}/../../../madek-auth.jar"
+    dest: "{{madek_auth_dir}}/madek-auth.jar"
+    owner: root
+    mode: 0644
+

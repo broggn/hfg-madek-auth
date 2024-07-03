@@ -1,0 +1,27 @@
+- name: stop api-service
+  service:
+    name: madek-auth
+    enabled: false
+    state: stopped
+  failed_when: false
+
+- name: make sure api-service user exists
+  user:
+    name: "{{madek_auth_user}}"
+    comment: "Madek Auth Service"
+    shell: /bin/false
+    system: yes
+    state: present
+
+- name: setup directories
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.owner }}"
+    mode: 0755
+  loop:
+    - { path: "{{madek_auth_dir}}", owner: root }
+
+
+

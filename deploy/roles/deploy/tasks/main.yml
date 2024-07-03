@@ -1,0 +1,17 @@
+- name: rp_maintenance
+  include_tasks: rev_prox_maintenance.yml
+
+- name: prepare
+  include_tasks: prepare.yml
+
+- name: build
+  include_tasks: build.yml
+
+- name: install jar
+  include_tasks: install_jar.yml
+
+- name: systemd service
+  include_tasks: service.yml
+
+- name: reverse-proxy
+  include_tasks: reverse-proxy.yml

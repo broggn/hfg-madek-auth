@@ -17,7 +17,6 @@ module Madek
 
     config.paths['config/database'] = ['datalayer/config/database.yml']
     
-    Rails.application.config.active_record.legacy_connection_handling = false
     Rails.autoloaders.main.inflector.inflect("json" => "JSON")
   end
 end

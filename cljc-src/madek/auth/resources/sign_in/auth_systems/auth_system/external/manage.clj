@@ -21,9 +21,11 @@
    (throw
     (ex-info "managed_domain resp instition must be present" {}))))
 
-(defn person-properties [account]
+(defn person-properties [account auth-system]
   (-> (select-keys account [:last_name :first_name])
-      (assoc :subtype "Person")))
+      (assoc :subtype "Person")
+      (assoc :institutional_id (:id account))
+      (assoc :institution (institution! auth-system))))
 
 (defn user-properties [account auth-system]
   (-> (select-keys account [:email :login :first_name :last_name])
@@ -36,16 +38,24 @@
   (let [institutional-id (-> account :id presence)
         institution (institution! auth-system)]
     (assert institutional-id)
-    (or (-> (sql/from :users)
-            (sql/select :*)
-            (sql/where [:= :institutional_id institutional-id])
-            (sql/where [:= :institution institution])
-            (sql-format :inline false)
-            (#(jdbc/execute-one! tx %)))
-        (let [person (-> (sql/insert-into :people)
-                         (sql/values [(person-properties account)])
-                         (sql-format :inline false)
-                         (#(jdbc/execute-one! tx % {:return-keys true})))]
+    (let [person
+          (or
+           (-> (sql/from :people)
+               (sql/select :*)
+               (sql/where [:= :institutional_id institutional-id])
+               (sql/where [:= :institution institution])
+               (sql-format :inline false)
+               (#(jdbc/execute-one! tx %)))
+           (-> (sql/insert-into :people)
+               (sql/values [(person-properties account auth-system)])
+               (sql-format :inline false)
+               (#(jdbc/execute-one! tx % {:return-keys true}))))]
+      (or (-> (sql/from :users)
+              (sql/select :*)
+              (sql/where [:= :institutional_id institutional-id])
+              (sql/where [:= :institution institution])
+              (sql-format :inline false)
+              (#(jdbc/execute-one! tx %)))
           (-> (sql/insert-into :users)
               (sql/values [(-> (user-properties account auth-system)
                                (assoc :person_id (:id person)))])
@@ -54,12 +64,9 @@
 
 ;;; update ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn update-person [user account auth-system tx]
-  (-> (sql/update :people)
-      (sql/set (person-properties account))
-      (sql/where [:= :id (:person_id user)])
-      (sql-format :inline false)
-      (#(jdbc/execute-one! tx % {:return-keys true}))))
+;; NOTE: We do not update the person; only the user. Person names are publicly visible meta data, 
+;;       so there can be reasons to hide the name provided by the auth system
+;;       (e.g. privacy, artist names).
 
 (defn update-user [user account auth-system tx]
   (-> (sql/update :users)
@@ -124,9 +131,10 @@
           (sql-format :inline false)
           (#(jdbc/execute-one! tx % {:return-keys true}))))))
 
-(defn create-group [properties tx]
+(defn create-group
   "Tries to create a group but may return nil if properties an not sufficient
-  or cause a collision with existing data. "
+    or cause a collision with existing data. "
+  [properties tx]
   (when (:name properties)
     (try
       (-> (sql/insert-into :groups)
@@ -136,9 +144,10 @@
       (catch Exception ex
         (warn "Failed to create group" ex)))))
 
-(defn create-or-update-group [properties tx]
+(defn create-or-update-group
   "If necessary updates or tries to create a group according to properties.
-  Returns the group with full properties or nil, see create-group "
+    Returns the group with full properties or nil, see create-group "
+  [properties tx]
   (if-let [group (find-group properties tx)]
     (update-group group properties tx)
     (create-group properties tx)))
@@ -189,7 +198,8 @@
 
 ;;; update ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn manage-account [account auth-system tx]
+(defn manage-account
+  [account auth-system tx]
   (debug 'manage-account {:account account})
   (let [user (get-or-create-user account auth-system tx)]
     (update-user user account auth-system tx)

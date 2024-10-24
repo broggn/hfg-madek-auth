@@ -116,6 +116,32 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
 
   end
 
+  scenario 'create account when person already exists' do
+    person = FactoryBot.create :person,
+      institutional_id: @institutional_id,
+      institution: @domain,
+      last_name: 'Miller'
+
+    visit '/auth/sign-in?return-to=%2Fauth%2Finfo&foo=42'
+    fill_in 'email-or-login', with: @email
+    click_on 'Weiter'
+    within('div', text: 'Authentication with User-Management Properties') do
+      click_on "I am"
+    end
+
+    sleep(0.5)
+    uri = Addressable::URI.parse(current_url)
+    expect(uri.path).to be== '/auth/info'
+
+    @user = User.first
+
+    # existing person must be referenced
+    expect(@user.person).to be== person
+
+    # person's last_name must remain as it was before login
+    expect(@user.person.last_name).to eq 'Miller'
+  end
+
   context 'Update account and sign-in' do
 
     before :each do

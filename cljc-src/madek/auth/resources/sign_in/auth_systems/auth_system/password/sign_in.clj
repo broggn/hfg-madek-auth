@@ -44,7 +44,7 @@
                 (sql-format :inline false)
                 (#(jdbc/execute-one! tx %)) :password_matches)
       (create-user-session-response res request)
-      {:status 401 :body {:message "Password missmatch"}})
+      {:status 401 :body {:message "Password mismatch"}})
     {:status 401 :body {:message "Password authentication is not available"}}))
 
 ;;; debug ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

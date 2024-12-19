@@ -63,13 +63,16 @@
                   (auth-systems-match-cond email-or-login)
                   [:exists (-> email-or-login users-matches-and-connected
                                (sql/select true))]])
+      (sql/where [:not [:and
+                        [:= :users.password_sign_in_enabled false]
+                        [:= :auth_systems.id "password"]]])
       (sql/order-by [:priority :desc])))
 
 (comment
-  (-> "tashia_sawayn_a44f13e7@boyer.example"
+  (-> "matus.kmit@zhdk.ch"
       auth-systems-query
       (sql-format :inline true)
-      (#(jdbc/execute-one! (get-ds) %))))
+      #_(#(jdbc/execute-one! (get-ds) %))))
 
 ;;; debug ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(debug-ns *ns*)

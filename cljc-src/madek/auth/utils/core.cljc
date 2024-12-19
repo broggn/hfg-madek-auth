@@ -34,6 +34,8 @@
     (coll? v) (if (empty? v) nil v)
     :else v))
 
+(def present? (comp boolean presence))
+
 (defn presence! [v]
   "Pipes v through presence returns the result of that iff it is not nil.
   Throws an IllegalStateException otherwise. "

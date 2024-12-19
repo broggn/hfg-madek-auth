@@ -1,6 +1,7 @@
 {:paths [:cljc-paths :resource-paths]
  :deps
- {buddy/buddy-sign {:mvn/version "3.4.333"}
+ {better-cond/better-cond {:mvn/version "2.1.5"}
+  buddy/buddy-sign {:mvn/version "3.4.333"}
   clj-commons/clj-yaml {:mvn/version "1.0.26"}
   clj-pid/clj-pid {:mvn/version "0.1.2"}
   cljs-http/cljs-http {:mvn/version "0.1.46"}

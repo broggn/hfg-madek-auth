@@ -20,6 +20,8 @@
       ["" {:name :sign-in-user-auth-systems}]
       [":auth_system_type" {}
        ["/:auth_system_id" {}
+        ["/forgot" :sign-in-user-auth-system-password-forgot]
+        ["/reset" :sign-in-user-auth-system-password-reset]
         ["/request" :sign-in-user-auth-system-request]
         ["/sign-in" :sign-in-user-auth-system-sign-in]]]]]
     ["/sign-out" {:name :sign-out}]]])

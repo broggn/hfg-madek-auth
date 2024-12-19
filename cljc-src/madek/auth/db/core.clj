@@ -80,7 +80,7 @@
             resp))
         (catch Throwable th
           (warn "Rolling back transaction because of " (.getMessage th))
-          (debug (.get-cause th))
+          (debug (.getCause th))
           (.rollback tx)
           (throw th))))))
 

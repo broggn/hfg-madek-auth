@@ -27,11 +27,6 @@ firefox_bin_path = Pathname.new(`asdf where firefox`.strip).join('bin/firefox').
 Selenium::WebDriver::Firefox.path = firefox_bin_path
 
 Capybara.register_driver :firefox do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.firefox(
-    # TODO: trust the cert used in container and remove this:
-    acceptInsecureCerts: true
-  )
-
   profile = Selenium::WebDriver::Firefox::Profile.new
   # TODO: configure language for locale testing
   # profile["intl.accept_languages"] = "en"
@@ -46,7 +41,9 @@ Capybara.register_driver :firefox do |app|
   opts = Selenium::WebDriver::Firefox::Options.new(
     binary: firefox_bin_path,
     profile: profile,
-    log_level: :trace)
+    log_level: :trace,
+    accept_insecure_certs: true
+  )
 
   opts.args << '--devtools' unless (ENV['CI'].presence || ENV['CIDER_CI_TRIAL_ID'].presence)
 

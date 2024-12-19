@@ -3,6 +3,7 @@
    [clojure.pprint :refer [pprint]]
    [clojure.tools.cli :as cli]
    [madek.auth.db.core :as db]
+   [madek.auth.db.settings :as settings]
    [madek.auth.http.server :as http-server]
    [madek.auth.routing.main :as routing]
    [madek.auth.state :as state]
@@ -26,6 +27,7 @@
   (state/init options)
   ;(init-shutdown options)
   (db/init options)
+  (settings/init)
   ;(settings/init)
   (init-http options))
 

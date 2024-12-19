@@ -4,7 +4,9 @@
    [logbug.debug :refer [debug-ns]]
    [madek.auth.resources.sign-in.auth-systems.auth-system.external.request :as sign-in-user-auth-system-external-request]
    [madek.auth.resources.sign-in.auth-systems.auth-system.external.sign-in :as sign-in-user-auth-system-external-sign-in]
+   [madek.auth.resources.sign-in.auth-systems.auth-system.password.forgot :as sign-in-user-auth-system-password-forgot]
    [madek.auth.resources.sign-in.auth-systems.auth-system.password.request :as sign-in-user-auth-system-password-request]
+   [madek.auth.resources.sign-in.auth-systems.auth-system.password.reset :as sign-in-user-auth-system-password-reset]
    [madek.auth.resources.sign-in.auth-systems.auth-system.password.sign-in :as sign-in-user-auth-system-password-sign-in]
    [madek.auth.resources.sign-in.auth-systems.main :as sign-in-user-auth-systems]
    [madek.auth.resources.sign-out.main :as sign-out]
@@ -16,6 +18,12 @@
   (case route-name
     :sign-in-user-auth-systems #'sign-in-user-auth-systems/handler
 
+    :sign-in-user-auth-system-password-forgot (case (:auth_system_type path-params)
+                                                "password" #'sign-in-user-auth-system-password-forgot/handler
+                                                (warn "No matching :auth_system_type" (:auth_system_type path-params)))
+    :sign-in-user-auth-system-password-reset (case (:auth_system_type path-params)
+                                               "password" #'sign-in-user-auth-system-password-reset/dispatch
+                                               (warn "No matching :auth_system_type" (:auth_system_type path-params)))
     :sign-in-user-auth-system-request (case (:auth_system_type path-params)
                                         "external" #'sign-in-user-auth-system-external-request/handler
                                         "password" #'sign-in-user-auth-system-password-request/handler

@@ -31,7 +31,7 @@
        (reset! auth-system*))))
 
 (defn password-mismatch? [req]
-  (-> req :response :body :message (= "Password missmatch")))
+  (-> req :response :body :message (= "Password mismatch")))
 
 (def password-mismatch?*
   (reaction
@@ -101,6 +101,15 @@
        {:type :submit}
        (translate :step3-submit-label)
        (when @waiting?* "...")]]
+     [:div.form-row
+      [:a
+       {:href (path :sign-in-user-auth-system-password-forgot
+                    (:path-params @state/routing*)
+                    (some-> @state/state*
+                            :routing
+                            :query-params
+                            (select-keys [:return-to :lang :email-or-login])))}
+       (translate :forgot-password-label)]]
      [:div
       [change-username-button
        {:href (path :sign-in {} (some-> @state/state* :routing

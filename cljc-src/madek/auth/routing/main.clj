@@ -80,32 +80,32 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn build-routes [options]
-  (I> wrap-handler-with-logging
-      not-found-handler
-      wrap-route-dispatch
-      ring-audits/wrap
-      wrap-route-resolve
-      wrap-json-response
-      spa/wrap
-      session/wrap
-      (wrap-json-body {:keywords? true})
-      settings/wrap
-      db/wrap-tx
-      anti-csrf/wrap
-      wrap-keyword-params
-      wrap-params
-      ring.middleware.cookies/wrap-cookies
-      (static-resources/wrap
-       "" {:allow-symlinks? true
-           :cache-bust-paths []
-           :never-expire-paths
-           [#".*[^\/]*\d+\.\d+\.\d+.+" ; match semver in the filename
-            #".+\.[0-9a-fA-F]{32,}\..+"] ; match MD5, SHAx, ... in the filename
-           :cache-enabled? (not (:dev-mode options))})
-      wrap-accept
-      wrap-add-vary-header
-      wrap-exception
-      wrap-content-type))
+  (-> ; I> wrap-handler-with-logging
+   not-found-handler
+   wrap-route-dispatch
+   ring-audits/wrap
+   wrap-route-resolve
+   wrap-json-response
+   spa/wrap
+   session/wrap
+   (wrap-json-body {:keywords? true})
+   settings/wrap
+   db/wrap-tx
+   anti-csrf/wrap
+   wrap-keyword-params
+   wrap-params
+   ring.middleware.cookies/wrap-cookies
+   (static-resources/wrap
+    "" {:allow-symlinks? true
+        :cache-bust-paths []
+        :never-expire-paths
+        [#".*[^\/]*\d+\.\d+\.\d+.+" ; match semver in the filename
+         #".+\.[0-9a-fA-F]{32,}\..+"] ; match MD5, SHAx, ... in the filename
+        :cache-enabled? (not (:dev-mode options))})
+   wrap-accept
+   wrap-add-vary-header
+   wrap-exception
+   wrap-content-type))
 
 (defn init [options]
   (info "initializing routing ...")

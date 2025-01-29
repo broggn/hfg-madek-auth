@@ -7,7 +7,7 @@ feature 'Sign in / sign out via ext auth with management', ci_group: :extauth do
   end
 
   let :ext_auth_key_pair do
-    ECKey.new
+    Madek::Crypto::ECKey.new
   end
 
   let :ext_auth_id do

@@ -7,8 +7,6 @@ require 'logger'
 require 'pry'
 require 'rspec'
 
-require 'lib/crypto'
-
 require 'config/rails'
 require 'config/database'
 require 'config/browser'
